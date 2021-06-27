@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from treasury_banking_app import views as all_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls)
+    path('admin/', admin.site.urls),
+    path('', all_views.MainPageView.as_view(), name='main'),
+    path('dashboard/', all_views.DashboardView.as_view(), name='dashboard'),
+    path('users_list/', all_views.UsersListView.as_view(), name='users-list'),
 ]
