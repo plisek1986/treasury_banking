@@ -7,7 +7,7 @@ DATABASES = {
         'NAME': 'treasury_banking',
         'HOST': 'localhost',
         'PASSWORD': 'krasnojarski2',
-        'USER': 'coderslab',
+        'USER': 'postgres',
         'PORT': 5432
     }
 }
