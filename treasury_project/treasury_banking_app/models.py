@@ -13,21 +13,26 @@ class User(models.Model):
     internal_id = models.CharField(max_length=7, blank=False)
     team = models.CharField(max_length=4, choices=TEAM_CHOICE)
     account = models.ManyToManyField('Account')
+    is_administrator = models.BooleanField(default=False)
+
+
+class Administrator(models.Model):
+    name = models.CharField(max_length=255, blank=False)
+    surname = models.CharField(max_length=255, blank=False)
+    login = models.CharField(max_length=255, blank=False)
+    password = models.CharField(max_length=64)
 
 
 class Permission(models.Model):
     CREATE_PAYMENT = 'CR'
     DELETE_PAYMENT = 'DP'
     APPROVE_PAYMENT = 'AP'
-    SAFETY_ADMINISTRATOR = 'SA'
     PERMISSION_CHOICE = [
         (CREATE_PAYMENT, 'Create Payment'),
         (DELETE_PAYMENT, 'Delete Payment'),
         (APPROVE_PAYMENT, 'Approve Payment'),
-        (SAFETY_ADMINISTRATOR, 'Safety Administrator'),
     ]
     permission_type = models.CharField(max_length=2, choices=PERMISSION_CHOICE)
-    aml_required = models.BooleanField(default=False)
     user = models.ManyToManyField(User)
 
 

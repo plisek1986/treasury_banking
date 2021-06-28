@@ -17,3 +17,12 @@ class UsersListView(View):
     def get(self, request):
         users = User.objects.all()
         return render(request, 'users_list.html', {'users': users})
+
+
+class UserView(View):
+    def get(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        accounts = user.account.all()
+        permissions = user.permission_set.all()
+        return render(request, 'user_view.html', {'user': user, 'accounts': accounts,
+                                                  'permissions': permissions})
