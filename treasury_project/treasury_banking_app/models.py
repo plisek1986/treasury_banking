@@ -30,7 +30,6 @@ class Permission(models.Model):
     permission_type = models.CharField(max_length=2, choices=PERMISSION_CHOICE)
 
 
-
 class Administrator(models.Model):
     name = models.CharField(max_length=255, blank=False)
     surname = models.CharField(max_length=255, blank=False)
