@@ -22,4 +22,5 @@ urlpatterns = [
     path('', all_views.MainPageView.as_view(), name='main'),
     path('dashboard/', all_views.DashboardView.as_view(), name='dashboard'),
     path('users_list/', all_views.UsersListView.as_view(), name='users-list'),
+    path('user_view/', all_views.UserView.as_view(), name='user-view'),
 ]

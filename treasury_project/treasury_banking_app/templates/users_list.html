@@ -71,7 +71,7 @@
                 <tbody>
                 {% for user in users %}
                 <tr>
-                    <td>{{user.name}}</td>
+                    <td><a href="/user_view/{{user.id}}/"{{user.name}}</td>
                     <td>{{user.surname}}</td>
                     <td>{{user.internal_id}}</td>
                     <td>{{user.team}}</td>

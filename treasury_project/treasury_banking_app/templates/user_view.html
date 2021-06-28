@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <p>User name: {{user.name}}</p>
+    <p>User Surname: {{user.surname}}</p>
+    <p>Internal ID: {{user.internal_id}}</p>
+    <p>Team: {{user.team}}</p>
+<!--    {% if {{user.is_administrator}} == False -->
+    <p>Administrator: {{user.is_administrator}}</p>
+    <p>Permissions</p>
+     <table>
+        <thead>
+            <tr>
+                <th>Permission</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for permission in permissions %}
+            <tr>
+                <td>{{permission.permission_type}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p>Accounts</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Bank</th>
+                <th>IBAN</th>
+                <th>Swift</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for account in accounts %}
+            <tr>
+                <td>{{account.company}}</td>
+                <td>{{account.bank}}</td>
+                <td>{{account.iban_number}}</td>
+                <td>{{account.swift_code}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
