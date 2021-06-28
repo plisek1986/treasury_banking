@@ -13,9 +13,22 @@ class User(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
     surname = models.CharField(max_length=255, blank=False)
     internal_id = models.CharField(max_length=7, blank=False)
-    permission_type = models.CharField(max_length=2, choices=PERMISSION_CHOICE, default=CREATE_PAYMENT)
     account = models.ManyToManyField('Account')
     is_administrator = models.BooleanField(default=False)
+    permission = models.ManyToManyField('Permission')
+
+
+class Permission(models.Model):
+    CREATE_PAYMENT = 'CR'
+    DELETE_PAYMENT = 'DP'
+    APPROVE_PAYMENT = 'AP'
+    PERMISSION_CHOICE = [
+        (CREATE_PAYMENT, 'Create Payment'),
+        (DELETE_PAYMENT, 'Delete Payment'),
+        (APPROVE_PAYMENT, 'Approve Payment'),
+    ]
+    permission_type = models.CharField(max_length=2, choices=PERMISSION_CHOICE)
+
 
 
 class Administrator(models.Model):
