@@ -5,28 +5,14 @@
     <title>Title</title>
 </head>
 <body>
+    <a href="">Edit User</a>
+    <a href="">Delete user</a>
     <p>User name: {{user.name}}</p>
     <p>User Surname: {{user.surname}}</p>
     <p>Internal ID: {{user.internal_id}}</p>
-    <p>Team: {{user.team}}</p>
-<!--    {% if {{user.is_administrator}} == False -->
     <p>Administrator: {{user.is_administrator}}</p>
-    <p>Permissions</p>
-     <table>
-        <thead>
-            <tr>
-                <th>Permission</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for permission in permissions %}
-            <tr>
-                <td>{{permission.permission_type}}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <p>Accounts</p>
+    <p>Permission type: {{user.permission_type}}</p>
+    <h1>Accounts</h1>
     <table>
         <thead>
             <tr>
@@ -47,5 +33,11 @@
             {% endfor %}
         </tbody>
     </table>
+    <p><a href=""</p>
+
+
+
+
+
 </body>
 </html>

@@ -23,6 +23,12 @@ class UserView(View):
     def get(self, request, user_id):
         user = User.objects.get(pk=user_id)
         accounts = user.account.all()
-        permissions = user.permission_set.all()
-        return render(request, 'user_view.html', {'user': user, 'accounts': accounts,
-                                                  'permissions': permissions})
+        return render(request, 'user_view.html', {'user': user, 'accounts': accounts})
+
+
+class UserEditView(View):
+    def get(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        accounts = user.account.all()
+        return render(request, 'user_edit.html', {'user': user, 'accounts': accounts})
+
