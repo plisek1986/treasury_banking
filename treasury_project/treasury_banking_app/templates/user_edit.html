@@ -24,12 +24,11 @@
                {% if user.is_administrator %} checked {% endif %}>
     <br>
     <label for="accounts">Choose accounts:</label>
-
-
-
-    {% for account in accounts %}
-
+    <select name="accounts" id="accounts" multiple>
+        {% for account in account %}
+        <option value="account">{{account.iban_number}}</option>
+        {% endfor %}
+    </select>
 </form>
-
 </body>
 </html>

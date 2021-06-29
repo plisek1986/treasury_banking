@@ -31,4 +31,3 @@ class UserEditView(View):
         user = User.objects.get(pk=user_id)
         accounts = user.account.all()
         return render(request, 'user_edit.html', {'user': user, 'accounts': accounts})
-
