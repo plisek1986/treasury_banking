@@ -62,17 +62,16 @@
             <table>
                 <thead>
                 <tr>
-                    <th>User name</th>
+                    <th>User full name</th>
                     <th>User surname</th>
                     <th>User internal ID</th>
-                    <th>User team</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for user in users %}
                 <tr>
-                    <td><a href="/user_view/{{user.id}}/"{{user.name}}</td>
-                    <td>{{user.surname}}</td>
+                    <td><a href="/user_view/{{user.id}}/">{{user.name}}, {{user.surname}}</a></td>
+
                     <td>{{user.internal_id}}</td>
                     <td>{{user.team}}</td>
                     {% endfor %}

@@ -5,13 +5,13 @@
     <title>Title</title>
 </head>
 <body>
-    <a href="">Edit User</a>
+    <a href="{% url 'user-edit' user_id=user.id %}">Edit User</a>
     <a href="">Delete user</a>
     <p>User name: {{user.name}}</p>
     <p>User Surname: {{user.surname}}</p>
     <p>Internal ID: {{user.internal_id}}</p>
-    <p>Administrator: {{user.is_administrator}}</p>
-    <p>Permission type: {{user.permission_type}}</p>
+    <p>Administrator: {{user.is_administrator|yesno}}</p>
+    <p>Permission type: {{user.permission}}</p>
     <h1>Accounts</h1>
     <table>
         <thead>
@@ -33,11 +33,5 @@
             {% endfor %}
         </tbody>
     </table>
-    <p><a href=""</p>
-
-
-
-
-
 </body>
 </html>
