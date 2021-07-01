@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
+
+from treasury_banking_app.forms import UserCreateForm
 from treasury_banking_app.models import User, Account, PERMISSION_CHOICE
 
 
@@ -11,6 +13,26 @@ class MainPageView(View):
 class DashboardView(View):
     def get(self, request):
         return render(request, 'dashboard.html')
+
+
+class UserCreateView(View):
+    def get(self, request):
+        form = UserCreateForm()
+        return render(request, 'user_create.html', {'form': form})
+
+    def post(self, request):
+        form = UserCreateForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            surname = form.cleaned_data['surname']
+            internal_id = form.cleaned_data['internal_id']
+            is_administrator = form.cleaned_data['is_administrator']
+            permission = form.cleaned_data['permission']
+            user = User.objects.create(name=name, surname=surname, internal_id=internal_id,
+                                       is_administrator=is_administrator)
+            user.set_permissions(permission)
+            user.save()
+            return redirect(request, 'users-list')
 
 
 class UsersListView(View):

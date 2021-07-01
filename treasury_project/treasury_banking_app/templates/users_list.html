@@ -70,10 +70,8 @@
                 <tbody>
                 {% for user in users %}
                 <tr>
-                    <td><a href="/user_view/{{user.id}}/">{{user.name}}, {{user.surname}}</a></td>
-
+                    <td><a href="/user_view/{{user.id}}/">{{user.surname}}, {{user.name}}</a></td>
                     <td>{{user.internal_id}}</td>
-                    <td>{{user.team}}</td>
                     {% endfor %}
                 </tbody>
             </table>

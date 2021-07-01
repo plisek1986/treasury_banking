@@ -3,11 +3,11 @@ from django import forms
 from treasury_banking_app.models import Account, PERMISSION_CHOICE, Bank, User
 
 
-class UserViewForm(forms.Form):
+class UserCreateForm(forms.Form):
     name = forms.CharField(max_length=255)
     surname = forms.CharField(max_length=255, required=True)
     internal_id = forms.CharField(max_length=7, required=True)
-    account = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple)
+    # account = forms.MultipleChoiceField(choices=Account.objects.get(pk=2), widget=forms.CheckboxSelectMultiple)
     is_administrator = forms.BooleanField(initial=False)
     permission = forms.MultipleChoiceField(choices=PERMISSION_CHOICE, widget=forms.CheckboxSelectMultiple)
 
@@ -20,16 +20,16 @@ class AdministratorViewForm(models.Model):
 
 
 class CompanyViewForm(models.Model):
-    name = forms.CharField(max_length=255, unique=True)
+    name = forms.CharField(max_length=255)
     country = forms.CharField(max_length=255)
-    bank = forms.MultipleChoiceField(Bank.objects.all(), widget=forms.CheckboxSelectMultiple)
+    bank = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple)
 
 
 class BankViewForm(models.Model):
-    name = forms.CharField(max_length=255, unique=True)
+    name = forms.CharField(max_length=255)
 
 
-class AccountViewForm(models.Model):
-    class Meta:
-        model = Account
-        fields = ['iban_number', 'swift_code', 'bank', 'company']
+# class AccountViewForm(models.Model):
+#     class Meta:
+#         model = Account()
+#         fields = ['iban_number', 'swift_code', 'bank', 'company']

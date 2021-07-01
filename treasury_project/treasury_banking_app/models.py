@@ -13,8 +13,14 @@ class User(models.Model):
     internal_id = models.CharField(max_length=7, blank=False)
     account = models.ManyToManyField('Account')
     is_administrator = models.BooleanField(default=False)
-    permission = models.CharField(max_length=64, choices=PERMISSION_CHOICE,
-                                  default='CREATE_PAYMENT')
+    permission = models.ManyToManyField('Permission')
+
+
+class Permission(models.Model):
+    type = models.CharField(max_length=64, choices=PERMISSION_CHOICE)
+
+    def __str__(self):
+        return self.type
 
 
 class Administrator(models.Model):
