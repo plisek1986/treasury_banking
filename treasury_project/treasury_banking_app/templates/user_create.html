@@ -8,6 +8,7 @@
   <form action="" method="POST">
       {% csrf_token %}
       {{form}}
+      {{message}}
       <button type="submit">Save</button>
   </form>
 </body>

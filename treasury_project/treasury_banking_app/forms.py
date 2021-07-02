@@ -1,6 +1,6 @@
 from django.db import models
 from django import forms
-from treasury_banking_app.models import Account, PERMISSION_CHOICE, Bank, User
+from treasury_banking_app.models import Account, ACCESS_CHOICE, Bank, User
 
 
 class UserCreateForm(forms.Form):
@@ -9,7 +9,7 @@ class UserCreateForm(forms.Form):
     internal_id = forms.CharField(max_length=7, required=True)
     # account = forms.MultipleChoiceField(choices=Account.objects.get(pk=2), widget=forms.CheckboxSelectMultiple)
     is_administrator = forms.BooleanField(initial=False)
-    permission = forms.MultipleChoiceField(choices=PERMISSION_CHOICE, widget=forms.CheckboxSelectMultiple)
+    access = forms.MultipleChoiceField(choices=ACCESS_CHOICE, widget=forms.CheckboxSelectMultiple)
 
 
 class AdministratorViewForm(models.Model):
