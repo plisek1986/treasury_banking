@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'default.html' %}
+<label for="iban">Iban number:</label>
+<input type="text" id="iban" name="iban"><br>
+<label for="swift">Swift code:</label>
+<input type="text" id="swift" name="swift"><br>
+<label for="bank">Bank:</label>
+<select name="bank" id="bank">
+    {% for bank in banks %}
+    <option value="{{bank.name}}">{{bank.name}}</option>
+    {% endfor %}
+</select><br>
+<label for="company">Company:</label>
+<input type="text" id="company" name="company" value="{{company.name}}" disabled>
+{% endblock %}

@@ -1,17 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+{% extends 'base.html' %}
+{% block content %}
 <body>
     <a href="{% url 'user-edit' user_id=user.id %}">Edit User</a>
-    <a href="">Delete user</a>
+    <a href="{% url 'user-delete' user_id=user.id %}">Delete user</a>
+    <a href="">Add accounts</a>
     <p>User name: {{user.name}}</p>
     <p>User Surname: {{user.surname}}</p>
     <p>Internal ID: {{user.internal_id}}</p>
     <p>Administrator: {{user.is_administrator|yesno}}</p>
-    <p>Permission type: {{user.permission}}</p>
+    <p>Payment approver: {{user.is_payment_approver|yesno}}</p>
+    <p>Payment creator: {{user.is_payment_creator|yesno}}</p>
+    <p>Can Delete Payment: {{user.can_delete_payment|yesno}}</p>
+<!--    <p>Permission type: {{user.access}}</p>-->
     <h1>Accounts</h1>
     <table>
         <thead>
@@ -20,6 +20,7 @@
                 <th>Bank</th>
                 <th>IBAN</th>
                 <th>Swift</th>
+<!--                <th>Access type</th>-->
             </tr>
         </thead>
         <tbody>
@@ -34,4 +35,4 @@
         </tbody>
     </table>
 </body>
-</html>
+{% endblock %}

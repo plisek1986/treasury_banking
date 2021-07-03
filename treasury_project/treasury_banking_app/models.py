@@ -1,6 +1,6 @@
 from django.db import models
 
-PERMISSION_CHOICE = (
+ACCESS_CHOICE = (
     ('CREATE_PAYMENT', 'Create Payment'),
     ('DELETE_PAYMENT', 'Delete Payment'),
     ('APPROVE_PAYMENT', 'Approve Payment'),
@@ -13,8 +13,17 @@ class User(models.Model):
     internal_id = models.CharField(max_length=7, blank=False)
     account = models.ManyToManyField('Account')
     is_administrator = models.BooleanField(default=False)
-    permission = models.CharField(max_length=64, choices=PERMISSION_CHOICE,
-                                  default='CREATE_PAYMENT')
+    is_payment_creator = models.BooleanField(default=False)
+    is_payment_approver = models.BooleanField(default=False)
+    can_delete_payment = models.BooleanField(default=False)
+    access = models.ManyToManyField('Access')
+
+
+class Access(models.Model):
+    access_type = models.CharField(max_length=64, choices=ACCESS_CHOICE)
+
+    def __str__(self):
+        return self.access_type
 
 
 class Administrator(models.Model):
@@ -27,7 +36,6 @@ class Administrator(models.Model):
 class Company(models.Model):
     name = models.CharField(max_length=255, unique=True)
     country = models.CharField(max_length=255)
-    bank = models.ManyToManyField('Bank')
 
     def __str__(self):
         return self.name
