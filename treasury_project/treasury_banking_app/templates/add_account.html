@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-{% include 'default.html' %}
-<label for="iban">Iban number:</label>
+<!--{% include 'default.html' %}-->
+<form action="" method="POST">
+    {% csrf_token %}
+ <label for="iban">Iban number:</label>
 <input type="text" id="iban" name="iban"><br>
 <label for="swift">Swift code:</label>
 <input type="text" id="swift" name="swift"><br>
@@ -13,4 +15,6 @@
 </select><br>
 <label for="company">Company:</label>
 <input type="text" id="company" name="company" value="{{company.name}}" disabled>
+    <button type="submit">Send</button>
+</form>
 {% endblock %}

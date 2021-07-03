@@ -145,10 +145,9 @@ class CompanyAddAccountView(View):
         iban_number = request.POST.get('iban')
         swift_code = request.POST.get('swift')
         bank = request.POST.get('bank')
-        # bank = Bank.objects.get(name=bank)
+        bank = Bank.objects.get(name=bank)
         account = Account.objects.create(iban_number=iban_number, swift_code=swift_code, bank=bank, company=company)
-        company.account_add(account)
-        company.save()
+        account.save()
         return redirect('company-list')
 
 
