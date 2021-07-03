@@ -1,26 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block content %}
 <form action="" method="POST">
     {% csrf_token %}
     <label for="user_name">User name:</label>
-        <input type="text" name='user_name' id='user_name' placeholder="User name" value="{{user.name}}">
+        <input type="text" name='user_name' id='user_name' placeholder="User name" value="{{user.name}}" disabled>
     <br>
     <label for="user_surname">User surname:</label>
         <input type="text" name='user_surname' id='user_surname' placeholder="User surname" value="{{user.surname}}">
     <br>
     <label for="internal_id">Internal ID:</label>
-        <input type="text" name='internal_id' id='internal_id' placeholder="7-digit internal ID" value="{{user.internal_id}}">
+        <input type="text" name='internal_id' id='internal_id' placeholder="7-digit internal ID"
+               value="{{user.internal_id}}" disabled>
     <br>
     {{message}}
     <br>
-    <label for="permission_type">Permission type:</label>
-    <input type="text" name='permission' id='permission_type' placeholder="permission type"
-           value="{{user.permission}}">
+    <label for="access">Access type:</label>
+    <input type="text" name='access' id='access' placeholder="access type"
+           value="{{user.access}}">
 <!--        <select name='permission_type' id='permission_type' multiple>-->
 <!--            <option value="{{permission_choice.CREATE_PAYMENT}}">Create Payment</option>-->
 <!--            <option value="{{permission_choice.DELETE_PAYMENT}}">Delete Payment</option>-->
@@ -46,5 +42,4 @@
 
     <button type="submit">Save changes</button>
 </form>
-</body>
-</html>
+{% endblock %}

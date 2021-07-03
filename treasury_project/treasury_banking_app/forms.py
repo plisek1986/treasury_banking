@@ -8,18 +8,20 @@ class UserCreateForm(forms.Form):
     surname = forms.CharField(max_length=255, required=True)
     internal_id = forms.CharField(max_length=7, required=True)
     # account = forms.MultipleChoiceField(choices=Account.objects.get(pk=2), widget=forms.CheckboxSelectMultiple)
-    is_administrator = forms.BooleanField(initial=False)
-    access = forms.MultipleChoiceField(choices=ACCESS_CHOICE, widget=forms.CheckboxSelectMultiple)
+    is_administrator = forms.BooleanField(initial=False, required=False)
+    is_payment_creator = forms.BooleanField(initial=False, required=False)
+    is_payment_approver = forms.BooleanField(initial=False, required=False)
+    can_delete_payment = forms.BooleanField(initial=False, required=False)
 
 
-class AdministratorViewForm(models.Model):
-    name = forms.CharField(max_length=255, required=True)
-    surname = forms.CharField(max_length=255, required=True)
-    login = forms.CharField(max_length=255, required=True)
-    password = forms.CharField(max_length=64, widget=forms.PasswordInput)
+# class AdministratorViewForm(models.Model):
+#     name = forms.CharField(max_length=255, required=True)
+#     surname = forms.CharField(max_length=255, required=True)
+#     login = forms.CharField(max_length=255, required=True)
+#     password = forms.CharField(max_length=64, widget=forms.PasswordInput)
 
 
-class CompanyViewForm(models.Model):
+class CompanyCreateForm(models.Model):
     name = forms.CharField(max_length=255)
     country = forms.CharField(max_length=255)
     bank = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple)
@@ -27,6 +29,7 @@ class CompanyViewForm(models.Model):
 
 class BankViewForm(models.Model):
     name = forms.CharField(max_length=255)
+
 
 
 # class AccountViewForm(models.Model):

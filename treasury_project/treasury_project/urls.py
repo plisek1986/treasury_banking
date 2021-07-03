@@ -25,4 +25,6 @@ urlpatterns = [
     path('user_view/<int:user_id>/', all_views.UserView.as_view(), name='user-view'),
     path('user_edit/<int:user_id>/', all_views.UserEditView.as_view(), name='user-edit'),
     path('user_create/', all_views.UserCreateView.as_view(), name='user-create'),
+    path('user_delete/<int:user_id>/', all_views.user_delete, name='user-delete'),
+    # path('company_create/', all_views.CompanyCreateView.as_view(), name='company-create'),
 ]

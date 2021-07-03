@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+{% extends 'base.html' %}
+{% block content %}
+
 <body>
   <form action="" method="POST">
       {% csrf_token %}
@@ -11,5 +8,4 @@
       {{message}}
       <button type="submit">Save</button>
   </form>
-</body>
-</html>
+  {% endblock %}
