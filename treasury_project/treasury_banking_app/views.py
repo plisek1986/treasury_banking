@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm
-from treasury_banking_app.models import User, Account, ACCESS_CHOICE
+from treasury_banking_app.models import User, Account, ACCESS_CHOICE, Company, Bank
 from django.http import HttpResponseRedirect, HttpResponse
 
 
@@ -96,15 +96,75 @@ def user_delete(request, user_id):
         response = HttpResponseRedirect('/users_list/')
         return response
 
-# class UserDeleteView(View):
-#     def get(self, user_id):
-#         user = User.objects.get(pk=user_id)
-#         user.delete()
-#         response = HttpResponseRedirect('users-list')
-#         return response
 
-#
-# class CompanyCreateView(View):
-#     def get(self, request):
-#         form = CompanyCreateForm()
-#         return render(request, 'base.html', {'form': form})
+class CompanyCreateView(View):
+    def get(self, request):
+        form = CompanyCreateForm()
+        return render(request, 'company_create.html', {'form': form})
+
+    def post(self, request):
+        form = CompanyCreateForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            country = form.cleaned_data['country']
+            if Company.objects.filter(name=name):
+                message = 'Company with this name already exists in database'
+                return render(request, 'company_create.html', {'form': form, 'message': message})
+            Company.objects.create(name=name, country=country)
+            return redirect('company-list')
+
+
+class CompanyListView(View):
+    def get(self, request):
+        companies = Company.objects.all()
+        return render(request, 'company_list.html', {'companies': companies})
+
+
+class CompanyView(View):
+    def get(self, request, company_id):
+        company = Company.objects.get(pk=company_id)
+        accounts = company.account_set.all()
+        return render(request, 'company_view.html', {'company': company, 'accounts': accounts})
+
+
+def company_delete(request, company_id):
+    if request.method == 'GET':
+        company = Company.objects.get(pk=company_id)
+        company.delete()
+        return redirect('company-list')
+
+
+class CompanyAddAccountView(View):
+    def get(self, request, company_id):
+        company = Company.objects.get(pk=company_id)
+        banks = Bank.objects.all()
+        return render(request, 'add_account.html', {'company': company, 'banks': banks})
+
+    def post(self, request, company_id):
+        company = Company.objects.get(pk=company_id)
+        iban_number = request.POST.get('iban')
+        swift_code = request.POST.get('swift')
+        bank = request.POST.get('bank')
+        # bank = Bank.objects.get(name=bank)
+        account = Account.objects.create(iban_number=iban_number, swift_code=swift_code, bank=bank, company=company)
+        company.account_add(account)
+        company.save()
+        return redirect('company-list')
+
+
+class AccountCreateView(View):
+    def get(self, request):
+        banks = Bank.objects.all()
+        companies = Company.objects.all()
+        return render(request, 'account_create.html', {'banks': banks, 'companies': companies})
+
+    def post(self, request):
+        iban_number = request.POST.get('iban')
+        swift_code = request.POST.get('swift')
+        bank = request.POST.get('bank')
+        bank = Bank.objects.get(name=bank)
+        company = request.POST.get('company')
+        company = Company.objects.get(name=company)
+        Account.objects.create(iban_number=iban_number, swift_code=swift_code,
+                               bank=bank, company=company)
+        return redirect('/')

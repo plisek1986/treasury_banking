@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Country</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for company in companies %}
+        <tr>
+            <td>{{company.name}}</td>
+            <td>{{company.country}}</td>
+            <td><a href="/company_view/{{company.id}}/">View</a></td>
+            <td><a href="">Edit</a></td>
+            <td><a href="">Delete</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+

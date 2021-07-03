@@ -21,18 +21,16 @@ class UserCreateForm(forms.Form):
 #     password = forms.CharField(max_length=64, widget=forms.PasswordInput)
 
 
-class CompanyCreateForm(models.Model):
+class CompanyCreateForm(forms.Form):
     name = forms.CharField(max_length=255)
     country = forms.CharField(max_length=255)
-    bank = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple)
 
 
 class BankViewForm(models.Model):
     name = forms.CharField(max_length=255)
 
 
-
-# class AccountViewForm(models.Model):
+# class AccountCreateForm(models.Model):
 #     class Meta:
 #         model = Account()
 #         fields = ['iban_number', 'swift_code', 'bank', 'company']

@@ -26,5 +26,10 @@ urlpatterns = [
     path('user_edit/<int:user_id>/', all_views.UserEditView.as_view(), name='user-edit'),
     path('user_create/', all_views.UserCreateView.as_view(), name='user-create'),
     path('user_delete/<int:user_id>/', all_views.user_delete, name='user-delete'),
-    # path('company_create/', all_views.CompanyCreateView.as_view(), name='company-create'),
+    path('company_create/', all_views.CompanyCreateView.as_view(), name='company-create'),
+    path('company_list/', all_views.CompanyListView.as_view(), name='company-list'),
+    path('company_view/<int:company_id>/', all_views.CompanyView.as_view(), name='company-view'),
+    path('company_delete/<int:company_id>/', all_views.company_delete, name='company-delete'),
+    path('company_add_account/<int:company_id>/', all_views.CompanyAddAccountView.as_view(), name='add-account'),
+    path('account_create/', all_views.AccountCreateView.as_view(), name='account-create'),
 ]
