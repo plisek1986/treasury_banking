@@ -148,7 +148,7 @@ class CompanyAddAccountView(View):
         bank = Bank.objects.get(name=bank)
         account = Account.objects.create(iban_number=iban_number, swift_code=swift_code, bank=bank, company=company)
         account.save()
-        return redirect('company-list')
+        return redirect(f'/company_view/{company_id}/')
 
 
 class AccountCreateView(View):
@@ -167,3 +167,16 @@ class AccountCreateView(View):
         Account.objects.create(iban_number=iban_number, swift_code=swift_code,
                                bank=bank, company=company)
         return redirect('/')
+
+
+class AccountListView(View):
+    def get(self, request):
+        accounts = Account.objects.all().order_by('-company')
+        return render(request, 'account_list.html', {'accounts': accounts})
+
+
+def account_delete(request, account_id):
+    if request.method == 'GET':
+        account = Account.objects.get(pk=account_id)
+        account.delete()
+        return redirect('accounts-list')
