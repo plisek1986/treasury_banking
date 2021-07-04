@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 
-from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm
+from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm, BankAddForm
 from treasury_banking_app.models import User, Account, ACCESS_CHOICE, Company, Bank
 from django.http import HttpResponseRedirect, HttpResponse
 
@@ -103,6 +103,16 @@ class UserAddAccountsView(View):
         accounts = Account.objects.all()
         return render(request, 'user_add_accounts.html', {'user': user, 'accounts': accounts})
 
+    def post(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        accounts = request.POST.getlist('accounts')
+        for account in accounts:
+            user_account = Account.objects.get(iban_number=account)
+            user.account.add(user_account)
+        # user.account.order_by('company')
+        user.save()
+        return redirect(f'/user_view/{user_id}/')
+
 
 class CompanyCreateView(View):
     def get(self, request):
@@ -145,7 +155,7 @@ class CompanyAddAccountView(View):
     def get(self, request, company_id):
         company = Company.objects.get(pk=company_id)
         banks = Bank.objects.all()
-        return render(request, 'add_account.html', {'company': company, 'banks': banks})
+        return render(request, 'company_add_account.html', {'company': company, 'banks': banks})
 
     def post(self, request, company_id):
         company = Company.objects.get(pk=company_id)
@@ -173,7 +183,7 @@ class AccountCreateView(View):
         company = Company.objects.get(name=company)
         Account.objects.create(iban_number=iban_number, swift_code=swift_code,
                                bank=bank, company=company)
-        return redirect('/')
+        return redirect('accounts-list')
 
 
 class AccountListView(View):
@@ -188,3 +198,18 @@ def account_delete(request, account_id):
         account.delete()
         return redirect('accounts-list')
 
+
+class BankAddView(View):
+    def get(self, request):
+        form = BankAddForm()
+        return render(request, 'bank_add.html', {'form': form})
+
+    def post(self, request):
+        form = BankAddForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            # if not isinstance(name, str):
+            #     message = 'Provided value must be text'
+            #     return request(render(request, 'bank_add.html', {'form': form, 'message': message}))
+            Bank.objects.create(name=name)
+            return redirect('/')

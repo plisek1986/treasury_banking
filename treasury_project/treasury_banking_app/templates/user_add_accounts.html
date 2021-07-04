@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
-<p><a href="{% url 'user-view' user_id=user.id %}">Back</a></p>
+<p><a href="{% url 'user-view' user_id=user.id %}">Go back</a></p>
+<form action="" method="POST">
+    {% csrf_token %}
 <table>
   <thead>
     <tr>
@@ -18,9 +20,11 @@
             <td>{{account.bank}}</td>
             <td>{{account.iban_number}}</td>
             <td>{{account.swift_code}}</td>
-            <td><input type="checkbox" name="account"/></td>
+            <td><input type="checkbox" name="accounts" value="{{account.iban_number}}"/></td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+    <button type="submit">Save</button>
+</form>
 {% endblock %}

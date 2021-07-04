@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <body>
+<p><a href="{% url 'users-list' %}">Go back</a></p>
     <a href="{% url 'user-edit' user_id=user.id %}">Edit User</a>
     <a href="{% url 'user-delete' user_id=user.id %}">Delete user</a>
     <a href="{% url 'user-add-accounts' user_id=user.id %}">Add accounts</a>

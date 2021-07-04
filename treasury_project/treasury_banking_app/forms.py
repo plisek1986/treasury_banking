@@ -1,5 +1,6 @@
 from django.db import models
 from django import forms
+from django.forms import ModelForm
 from treasury_banking_app.models import Account, ACCESS_CHOICE, Bank, User
 
 
@@ -26,8 +27,10 @@ class CompanyCreateForm(forms.Form):
     country = forms.CharField(max_length=255)
 
 
-class BankViewForm(models.Model):
-    name = forms.CharField(max_length=255)
+class BankAddForm(ModelForm):
+    class Meta:
+        model = Bank
+        fields = ['name']
 
 
 # class AccountCreateForm(models.Model):
