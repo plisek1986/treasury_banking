@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-<p><a href="{% url 'dashboard' %}">Go back</a></p>
+<p><a href="{% url 'user-view' user_id=user.id %}">Back</a></p>
 <table>
-    <thead>
-        <tr>
-            <th>Company</th>
-            <th>Bank</th>
-            <th>Iban number</th>
-            <th>Swift</th>
-        </tr>
-    </thead>
+  <thead>
+    <tr>
+        <th>Company</th>
+        <th>Bank</th>
+        <th>Iban number</th>
+        <th>Swift</th>
+        <th>Add</th>
+    </tr>
+  </thead>
     <tbody>
         {% for account in accounts %}
         <tr>
@@ -17,8 +18,7 @@
             <td>{{account.bank}}</td>
             <td>{{account.iban_number}}</td>
             <td>{{account.swift_code}}</td>
-            <td><a href="">Edit</a></td>
-            <td><a href="{% url 'account-delete' account_id=account.id %}">Delete</a></td>
+            <td><input type="checkbox" name="account"/></td>
         </tr>
         {% endfor %}
     </tbody>

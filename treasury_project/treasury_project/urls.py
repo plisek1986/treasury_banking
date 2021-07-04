@@ -26,6 +26,7 @@ urlpatterns = [
     path('user_edit/<int:user_id>/', all_views.UserEditView.as_view(), name='user-edit'),
     path('user_create/', all_views.UserCreateView.as_view(), name='user-create'),
     path('user_delete/<int:user_id>/', all_views.user_delete, name='user-delete'),
+    path('user_add_accounts/<int:user_id>/', all_views.UserAddAccountsView.as_view(), name='user-add-accounts'),
     path('company_create/', all_views.CompanyCreateView.as_view(), name='company-create'),
     path('company_list/', all_views.CompanyListView.as_view(), name='company-list'),
     path('company_view/<int:company_id>/', all_views.CompanyView.as_view(), name='company-view'),

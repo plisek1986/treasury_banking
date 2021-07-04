@@ -3,7 +3,7 @@
 <body>
     <a href="{% url 'user-edit' user_id=user.id %}">Edit User</a>
     <a href="{% url 'user-delete' user_id=user.id %}">Delete user</a>
-    <a href="">Add accounts</a>
+    <a href="{% url 'user-add-accounts' user_id=user.id %}">Add accounts</a>
     <p>User name: {{user.name}}</p>
     <p>User Surname: {{user.surname}}</p>
     <p>Internal ID: {{user.internal_id}}</p>

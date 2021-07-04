@@ -97,6 +97,13 @@ def user_delete(request, user_id):
         return response
 
 
+class UserAddAccountsView(View):
+    def get(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        accounts = Account.objects.all()
+        return render(request, 'user_add_accounts.html', {'user': user, 'accounts': accounts})
+
+
 class CompanyCreateView(View):
     def get(self, request):
         form = CompanyCreateForm()
@@ -180,3 +187,4 @@ def account_delete(request, account_id):
         account = Account.objects.get(pk=account_id)
         account.delete()
         return redirect('accounts-list')
+
