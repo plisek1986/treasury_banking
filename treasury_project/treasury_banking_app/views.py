@@ -208,8 +208,15 @@ class BankAddView(View):
         form = BankAddForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
-            # if not isinstance(name, str):
-            #     message = 'Provided value must be text'
-            #     return request(render(request, 'bank_add.html', {'form': form, 'message': message}))
-            Bank.objects.create(name=name)
-            return redirect('/')
+            if Bank.objects.filter(name=name) is not None:
+                message = 'This bank already exists in database'
+                return render(request, 'bank_add.html', {'form': form, 'message': message})
+            else:
+                Bank.objects.create(name=name)
+            return redirect('banks-list')
+
+
+class BankListView(View):
+    def get(self, request):
+        banks = Bank.objects.all()
+        return render(request, 'banks_list.html', {'banks': banks})
