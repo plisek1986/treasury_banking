@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+<p><a href="{% url 'users-list' %}">Go back</a></p>
 {% include 'default.html' %}
+{{message}}
 {% endblock %}

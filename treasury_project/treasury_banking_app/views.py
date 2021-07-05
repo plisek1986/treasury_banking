@@ -67,26 +67,34 @@ class UserEditView(View):
 
     def post(self, request, user_id):
         user = User.objects.get(pk=user_id)
-        accounts = Account.objects.all()
-        name = request.POST.get('user_name')
         surname = request.POST.get('user_surname')
         is_administrator = request.POST.get('administrator')
-        # access = request.POST.get('access')
-        # account = request.POST.get('account')
-        internal_id = request.POST.get('internal_id')
-        if len(internal_id) < 7:
-            message = 'Provided internal ID is too short'
-            return render(request, 'user_edit.html', {'user': user, 'accounts': accounts,
-                                                      'message': message,
-                                                      'access_choice': ACCESS_CHOICE})
-        user.name = name
+        if is_administrator == "on":
+            is_administrator = True
+        else:
+            is_administrator = False
+        is_payment_creator = request.POST.get('creator')
+        if is_payment_creator == "on":
+            is_payment_creator = True
+        else:
+            is_payment_creator = False
+        is_payment_approver = request.POST.get('approver')
+        if is_payment_approver == "on":
+            is_payment_approver = True
+        else:
+            is_payment_approver = False
+        can_delete_payment = request.POST.get('delete')
+        if can_delete_payment == "on":
+            can_delete_payment = True
+        else:
+            can_delete_payment = False
         user.surname = surname
-        user.internal_id = internal_id
         user.is_administrator = is_administrator
-        # user.account.set = account
-        # user.access.set(access.value)
+        user.is_payment_creator = is_payment_creator
+        user.is_payment_approver = is_payment_approver
+        user.can_delete_payment = can_delete_payment
         user.save()
-        return redirect('users-list')
+        return redirect(f'/user_view/{user_id}/')
 
 
 def user_delete(request, user_id):
@@ -106,9 +114,9 @@ class UserAddAccountsView(View):
         for account in accounts:
             if account not in user_accounts:
                 available_accounts.append(account)
-        return render(request, 'user_add_accounts.html', {'user':user, 'available_accounts': available_accounts})
+        return render(request, 'user_add_accounts.html', {'user': user, 'available_accounts': available_accounts})
 
-            # return render(request, 'user_add_accounts.html', {'user': user, 'accounts': accounts,
+        # return render(request, 'user_add_accounts.html', {'user': user, 'accounts': accounts,
         #                                                   'user_accounts': user_accounts})
 
     def post(self, request, user_id):
