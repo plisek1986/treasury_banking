@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 
-from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm
+from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm, BankAddForm
 from treasury_banking_app.models import User, Account, ACCESS_CHOICE, Company, Bank
 from django.http import HttpResponseRedirect, HttpResponse
 
@@ -97,6 +97,31 @@ def user_delete(request, user_id):
         return response
 
 
+class UserAddAccountsView(View):
+    def get(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        accounts = Account.objects.all()
+        user_accounts = user.account.all()
+        available_accounts = []
+        for account in accounts:
+            if account not in user_accounts:
+                available_accounts.append(account)
+        return render(request, 'user_add_accounts.html', {'user':user, 'available_accounts': available_accounts})
+
+            # return render(request, 'user_add_accounts.html', {'user': user, 'accounts': accounts,
+        #                                                   'user_accounts': user_accounts})
+
+    def post(self, request, user_id):
+        user = User.objects.get(pk=user_id)
+        accounts = request.POST.getlist('accounts')
+        for account in accounts:
+            user_account = Account.objects.get(iban_number=account)
+            user.account.add(user_account)
+        # user.account.order_by('company')
+        user.save()
+        return redirect(f'/user_view/{user_id}/')
+
+
 class CompanyCreateView(View):
     def get(self, request):
         form = CompanyCreateForm()
@@ -138,18 +163,17 @@ class CompanyAddAccountView(View):
     def get(self, request, company_id):
         company = Company.objects.get(pk=company_id)
         banks = Bank.objects.all()
-        return render(request, 'add_account.html', {'company': company, 'banks': banks})
+        return render(request, 'company_add_account.html', {'company': company, 'banks': banks})
 
     def post(self, request, company_id):
         company = Company.objects.get(pk=company_id)
         iban_number = request.POST.get('iban')
         swift_code = request.POST.get('swift')
         bank = request.POST.get('bank')
-        # bank = Bank.objects.get(name=bank)
+        bank = Bank.objects.get(name=bank)
         account = Account.objects.create(iban_number=iban_number, swift_code=swift_code, bank=bank, company=company)
-        company.account_add(account)
-        company.save()
-        return redirect('company-list')
+        account.save()
+        return redirect(f'/company_view/{company_id}/')
 
 
 class AccountCreateView(View):
@@ -167,4 +191,39 @@ class AccountCreateView(View):
         company = Company.objects.get(name=company)
         Account.objects.create(iban_number=iban_number, swift_code=swift_code,
                                bank=bank, company=company)
-        return redirect('/')
+        return redirect('accounts-list')
+
+
+class AccountListView(View):
+    def get(self, request):
+        accounts = Account.objects.all().order_by('-company')
+        return render(request, 'account_list.html', {'accounts': accounts})
+
+
+def account_delete(request, account_id):
+    if request.method == 'GET':
+        account = Account.objects.get(pk=account_id)
+        account.delete()
+        return redirect('accounts-list')
+
+
+class BankAddView(View):
+    def get(self, request):
+        form = BankAddForm()
+        return render(request, 'bank_add.html', {'form': form})
+
+    def post(self, request):
+        form = BankAddForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            if Bank.objects.filter(name=name):
+                message = 'This bank already exists in database'
+                return render(request, 'bank_add.html', {'form': form, 'message': message})
+            Bank.objects.create(name=name)
+            return redirect('banks-list')
+
+
+class BankListView(View):
+    def get(self, request):
+        banks = Bank.objects.all()
+        return render(request, 'banks_list.html', {'banks': banks})

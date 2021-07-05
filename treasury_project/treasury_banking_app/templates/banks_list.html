@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<p><a href="{% url 'bank-add' %}">New bank</a></p>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for bank in banks %}
+        <tr>
+            <td>{{bank.name}}</td>
+            <td><a href="">View</a></td>
+            <td><a href="">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

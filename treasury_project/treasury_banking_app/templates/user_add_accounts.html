@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<p><a href="{% url 'user-view' user_id=user.id %}">Go back</a></p>
+<form action="" method="POST">
+    {% csrf_token %}
+<table>
+  <thead>
+    <tr>
+        <th>Company</th>
+        <th>Bank</th>
+        <th>Iban number</th>
+        <th>Swift</th>
+        <th>Add</th>
+    </tr>
+  </thead>
+    <tbody>
+            {% for account in available_accounts %}
+        <tr>
+            <td>{{account.company}}</td>
+            <td>{{account.bank}}</td>
+            <td>{{account.iban_number}}</td>
+            <td>{{account.swift_code}}</td>
+            <td><input type="checkbox" name="accounts" value="{{account.iban_number}}"/></td>
+        </tr>
+            {% endfor %}
+    </tbody>
+</table>
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

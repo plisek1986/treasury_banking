@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<!--{% include 'default.html' %}-->
+<p><a href="{% url 'company-view' company_id=company.id %}">Go back</a></p>
 <form action="" method="POST">
     {% csrf_token %}
  <label for="iban">Iban number:</label>
