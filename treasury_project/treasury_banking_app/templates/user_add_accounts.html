@@ -14,7 +14,7 @@
     </tr>
   </thead>
     <tbody>
-        {% for account in accounts %}
+            {% for account in available_accounts %}
         <tr>
             <td>{{account.company}}</td>
             <td>{{account.bank}}</td>
@@ -22,7 +22,7 @@
             <td>{{account.swift_code}}</td>
             <td><input type="checkbox" name="accounts" value="{{account.iban_number}}"/></td>
         </tr>
-        {% endfor %}
+            {% endfor %}
     </tbody>
 </table>
     <button type="submit">Save</button>

@@ -101,7 +101,15 @@ class UserAddAccountsView(View):
     def get(self, request, user_id):
         user = User.objects.get(pk=user_id)
         accounts = Account.objects.all()
-        return render(request, 'user_add_accounts.html', {'user': user, 'accounts': accounts})
+        user_accounts = user.account.all()
+        available_accounts = []
+        for account in accounts:
+            if account not in user_accounts:
+                available_accounts.append(account)
+        return render(request, 'user_add_accounts.html', {'user':user, 'available_accounts': available_accounts})
+
+            # return render(request, 'user_add_accounts.html', {'user': user, 'accounts': accounts,
+        #                                                   'user_accounts': user_accounts})
 
     def post(self, request, user_id):
         user = User.objects.get(pk=user_id)
@@ -208,11 +216,10 @@ class BankAddView(View):
         form = BankAddForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
-            if Bank.objects.filter(name=name) is not None:
+            if Bank.objects.filter(name=name):
                 message = 'This bank already exists in database'
                 return render(request, 'bank_add.html', {'form': form, 'message': message})
-            else:
-                Bank.objects.create(name=name)
+            Bank.objects.create(name=name)
             return redirect('banks-list')
 
 

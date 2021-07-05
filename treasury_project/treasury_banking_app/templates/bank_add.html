@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-{% include 'default.html' %}
-{{message}}
+<p><a href="{% url 'banks-list' %}">Go back</a></p>
+<form action="" method="POST">
+    {% csrf_token %}
+    {{form}}
+    {{message}}
+    <button type="submit">Save</button>
+</form>
 {% endblock %}
