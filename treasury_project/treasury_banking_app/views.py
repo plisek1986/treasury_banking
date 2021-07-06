@@ -88,6 +88,9 @@ class UserEditView(View):
             can_delete_payment = True
         else:
             can_delete_payment = False
+        if is_payment_creator is True and is_payment_approver is True:
+            message = 'Violation of segregation of duties. User cannot create and approve payments.'
+            return render(request, 'user_edit.html', {'user': user, 'message': message})
         user.surname = surname
         user.is_administrator = is_administrator
         user.is_payment_creator = is_payment_creator
@@ -116,16 +119,21 @@ class UserAddAccountsView(View):
                 available_accounts.append(account)
         return render(request, 'user_add_accounts.html', {'user': user, 'available_accounts': available_accounts})
 
-        # return render(request, 'user_add_accounts.html', {'user': user, 'accounts': accounts,
-        #                                                   'user_accounts': user_accounts})
-
     def post(self, request, user_id):
         user = User.objects.get(pk=user_id)
         accounts = request.POST.getlist('accounts')
         for account in accounts:
             user_account = Account.objects.get(iban_number=account)
             user.account.add(user_account)
-        # user.account.order_by('company')
+        user.save()
+        return redirect(f'/user_view/{user_id}/')
+
+
+def user_remove_accounts(request, user_id, account_id):
+    if request.method == "GET":
+        user = User.objects.get(pk=user_id)
+        account = Account.objects.get(pk=account_id)
+        user.account.remove(account)
         user.save()
         return redirect(f'/user_view/{user_id}/')
 

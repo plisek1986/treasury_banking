@@ -28,6 +28,7 @@
         <input type="checkbox" name='delete' id="delete"
                {% if user.can_delete_payment %} checked {% endif %}>
     <br>
+    {{message}}<br>
     <button type="submit">Save</button>
 </form>
 {% endblock %}
