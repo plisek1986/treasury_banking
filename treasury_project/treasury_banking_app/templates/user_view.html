@@ -5,15 +5,27 @@
     <a href="{% url 'user-edit' user_id=user.id %}">Edit User</a>
     <a href="{% url 'user-delete' user_id=user.id %}">Delete user</a>
     <a href="{% url 'user-add-accounts' user_id=user.id %}">Add accounts</a>
-    <p>User name: {{user.name}}</p>
-    <p>User Surname: {{user.surname}}</p>
-    <p>Internal ID: {{user.internal_id}}</p>
-    <p>Administrator: {{user.is_administrator|yesno}}</p>
-    <p>Payment approver: {{user.is_payment_approver|yesno}}</p>
-    <p>Payment creator: {{user.is_payment_creator|yesno}}</p>
-    <p>Can Delete Payment: {{user.can_delete_payment|yesno}}</p>
-<!--    <p>Permission type: {{user.access}}</p>-->
-    <h1>Accounts</h1>
+    <p><strong>User name:</strong> {{user.name}}</p>
+    <p><strong>User Surname:</strong> {{user.surname}}</p>
+    <p><strong>Internal ID:</strong>{{user.internal_id}}</p>
+    <h3><strong>Access:</strong></h3>
+    <label for="administrator">Administrator:</label>
+        <input type="checkbox" name='administrator' id="administrator"
+               {% if not user.is_administrator %} disabled {% else %} disabled checked {% endif %}>
+    <br>
+    <label for="approver">Payment approver</label>
+        <input type="checkbox" name='approver' id="approver"
+               {% if not user.is_payment_approver %} disabled {% else %} disabled checked {% endif %}>
+    <br>
+    <label for="creator">Payment creator:</label>
+        <input type="checkbox" name='administrator' id="creator"
+               {% if not user.is_payment_creator %} disabled {% else %} disabled checked {% endif %}>
+    <br>
+    <label for="delete">Can delete payment</label>
+        <input type="checkbox" name='delete' id="delete"
+               {% if not user.can_delete_payment %} disabled {% else %} checked disabled {% endif %}>
+    <br>
+    <h3>Accounts</h3>
     <table>
         <thead>
             <tr>
@@ -21,7 +33,6 @@
                 <th>Bank</th>
                 <th>IBAN</th>
                 <th>Swift</th>
-<!--                <th>Access type</th>-->
             </tr>
         </thead>
         <tbody>
@@ -31,6 +42,7 @@
                 <td>{{account.bank}}</td>
                 <td>{{account.iban_number}}</td>
                 <td>{{account.swift_code}}</td>
+                <td><a href="{% url 'user-remove-accounts' user_id=user.id account_id=account.id%}">Remove</a></td>
             </tr>
             {% endfor %}
         </tbody>

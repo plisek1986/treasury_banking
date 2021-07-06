@@ -37,4 +37,6 @@ urlpatterns = [
     path('account_delete/<int:account_id>/', all_views.account_delete, name='account-delete'),
     path('bank_add/', all_views.BankAddView.as_view(), name='bank-add'),
     path('bank_list/', all_views.BankListView.as_view(), name='banks-list'),
+    path('user_remove_accounts/<int:user_id>/<int:account_id>/', all_views.user_remove_accounts,
+         name='user-remove-accounts'),
 ]

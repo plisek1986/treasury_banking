@@ -10,37 +10,25 @@
         <input type="text" name='user_surname' id='user_surname' placeholder="User surname" value="{{user.surname}}">
     <br>
     <label for="internal_id">Internal ID:</label>
-        <input type="text" name='internal_id' id='internal_id' placeholder="7-digit internal ID"
-               value="{{user.internal_id}}" disabled>
-    <br>
-    {{message}}
-    <br>
-    <label for="access">Access type:</label>
-    <input type="text" name='access' id='access' placeholder="access type"
-           value="{{user.access}}">
-<!--        <select name='permission_type' id='permission_type' multiple>-->
-<!--            <option value="{{permission_choice.CREATE_PAYMENT}}">Create Payment</option>-->
-<!--            <option value="{{permission_choice.DELETE_PAYMENT}}">Delete Payment</option>-->
-<!--            <option value="{{permission_choice.APPROVE_PAYMENT}}">Approve Payment</option>-->
-<!--        </select>-->
+        <input type="text" name='internal_id' id='internal_id' value="{{user.internal_id}}" disabled>
     <br>
     <label for="administrator">Administrator</label>
         <input type="checkbox" name='administrator' id="administrator"
                {% if user.is_administrator %} checked {% endif %}>
     <br>
-<!--    <label for="accounts">Choose accounts:</label>-->
-<!--    <p>Choose accounts</p>-->
-<!--    <ul>-->
-<!--        {% for account in accounts %}-->
-<!--        <li>{{account.iban_number}}</li>-->
-<!--        {% endfor %}-->
-<!--    </ul>-->
-<!--    <select name="accounts" id="accounts" multiple>-->
-<!--        {% for account in account %}-->
-<!--        <option value="account">{{account.iban_number}}</option>-->
-<!--        {% endfor %}-->
-<!--    </select>-->
-
-    <button type="submit">Save changes</button>
+    <label for="approver">Payment approver</label>
+        <input type="checkbox" name='approver' id="approver"
+               {% if user.is_payment_approver %} checked {% endif %}>
+    <br>
+    <label for="creator">Payment creator</label>
+        <input type="checkbox" name='creator' id="creator"
+               {% if user.is_payment_creator %} checked {% endif %}>
+    <br>
+    <label for="delete">Can delete payment</label>
+        <input type="checkbox" name='delete' id="delete"
+               {% if user.can_delete_payment %} checked {% endif %}>
+    <br>
+    {{message}}<br>
+    <button type="submit">Save</button>
 </form>
 {% endblock %}
