@@ -98,11 +98,11 @@ class UserEditView(View):
 
 
 def user_delete(request, user_id):
-    if request.method == 'GET':
-        user = User.objects.get(pk=user_id)
+    user = User.objects.get(pk=user_id)
+    if request.method == 'POST':
         user.delete()
-        response = HttpResponseRedirect('/users_list/')
-        return response
+        return redirect('users-list')
+    return render(request, 'user_delete.html', {'user': user})
 
 
 class UserAddAccountsView(View):
