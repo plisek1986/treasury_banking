@@ -38,7 +38,7 @@ class UserCreateView(View):
             is_administrator = form.cleaned_data['is_administrator']
             can_delete_payment = form.cleaned_data['can_delete_payment']
             if is_payment_creator is True and is_payment_approver is True:
-                message = 'Violation of segregation of duties. User cannot create and approve payments'
+                message = 'Violation of segregation of duties. User cannot create and approve payments.'
                 return render(request, 'user_create.html', {'form': form, 'message': message})
             User.objects.create(name=name, surname=surname, internal_id=internal_id,
                                 is_administrator=is_administrator, is_payment_creator=is_payment_creator,
@@ -190,6 +190,15 @@ class CompanyAddAccountView(View):
         account = Account.objects.create(iban_number=iban_number, swift_code=swift_code, bank=bank, company=company)
         account.save()
         return redirect(f'/company_view/{company_id}/')
+
+
+def company_delete_accounts(request, account_id, company_id):
+    company = Company.objects.get(pk=company_id)
+    account = Account.objects.get(pk=account_id)
+    if request.method == 'POST':
+        account.delete()
+        return redirect(f'/company_view/{company_id}/')
+    return render(request, 'company_account_delete.html', {'company': company, 'account': account})
 
 
 class AccountCreateView(View):
