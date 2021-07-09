@@ -1,4 +1,5 @@
 from django.db import models
+# from validators import iban_validator
 
 ACCESS_CHOICE = (
     ('CREATE_PAYMENT', 'Create Payment'),
@@ -42,7 +43,7 @@ class Company(models.Model):
 
 
 class Bank(models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255, unique=True, blank=False)
 
     def __str__(self):
         return self.name

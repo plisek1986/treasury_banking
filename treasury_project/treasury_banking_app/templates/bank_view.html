@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <p><a href="{% url 'banks-list' %}">Go back</a></p>
+    <a href="">Edit</a>
+    <a href="">Delete</a>
+    <p>Bank name: {{bank.name}}</p>
+    <h2>Accounts:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Iban number</th>
+                <th>Swift code</th>
+                <th>Bank</th>
+            </tr>
+        </thead>
+            <tbody>
+            {% for account in accounts %}
+                <tr>
+                    <td>{{account.company}}</td>
+                    <td>{{account.iban_number}}</td>
+                    <td>{{account.swift_code}}</td>
+                    <td>{{account.bank}}</td>
+                    <td><a href="{% url 'bank-account-delete' bank_id=bank.id account_id=account.id %}">Delete</a></td>
+                </tr>
+            {% endfor %}
+    </tbody>
+    </table>
+</body>
+</html>

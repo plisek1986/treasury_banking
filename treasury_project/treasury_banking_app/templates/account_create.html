@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<!--{% include 'default.html' %}-->
+<p><a href="{% url 'accounts-list' %}">Go back</a></p>
 <form action="" method="POST">
     {% csrf_token %}
   <label for="iban">Iban number:</label>

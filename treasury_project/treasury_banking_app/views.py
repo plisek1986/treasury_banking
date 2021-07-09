@@ -3,7 +3,41 @@ from django.views import View
 
 from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm, BankAddForm
 from treasury_banking_app.models import User, Account, ACCESS_CHOICE, Company, Bank
-from django.http import HttpResponseRedirect, HttpResponse
+
+
+#
+# IBAN_COUNTRY_CODE_LENGTH = {
+#     'Austria': 20,  # Austria
+#     'Belgium': 16,  # Belgium
+#     'Bulgaria': 22,  # Bulgaria
+#     'Switzerland': 21,  # Switzerland
+#     'Czech Republic': 24,  # Czech Republic
+#     'Germany': 22,  # Germany
+#     'Denmark': 18,  # Denmark
+#     'Estonia': 20,  # Estonia
+#     'Spain': 24,  # Spain
+#     'Finland': 18,  # Finland
+#     'France': 27,  # France
+#     'United Kingdom': 22,  # United Kingdom + Guernsey, Isle of Man, Jersey
+#     'GR': 27,  # Greece
+#     'HR': 21,  # Croatia
+#     'HU': 28,  # Hungary
+#     'IE': 22,  # Ireland
+#     'IS': 26,  # Iceland
+#     'IT': 27,  # Italy
+#     'KZ': 20,  # Kazakhstan
+#     'LT': 20,  # Lithuania
+#     'LV': 21,  # Latvia
+#     'NL': 18,  # Netherlands
+#     'NO': 15,  # Norway
+#     'PL': 28,  # Poland
+#     'PT': 25,  # Portugal
+#     'RO': 24,  # Romania
+#     'SE': 24,  # Sweden
+#     'SI': 19,  # Slovenia
+#     'SK': 24,  # Slovakia
+#     'TR': 26,  # Turkey
+# }
 
 
 class MainPageView(View):
@@ -232,6 +266,15 @@ def account_delete(request, account_id):
         return redirect('accounts-list')
 
 
+def bank_account_delete(request, account_id, bank_id):
+    account = Account.objects.get(pk=account_id)
+    bank = Bank.objects.get(pk=bank_id)
+    if request.method == 'POST':
+        account.delete()
+        return redirect(f'/bank_view/{bank_id}/')
+    return render(request, 'bank_account_delete.html', {'account': account, 'bank': bank})
+
+
 class BankAddView(View):
     def get(self, request):
         form = BankAddForm()
@@ -252,3 +295,18 @@ class BankListView(View):
     def get(self, request):
         banks = Bank.objects.all()
         return render(request, 'banks_list.html', {'banks': banks})
+
+
+class BankViewView(View):
+    def get(self, request, bank_id):
+        bank = Bank.objects.get(pk=bank_id)
+        accounts = bank.account_set.all()
+        return render(request, 'bank_view.html', {'bank': bank, 'accounts': accounts})
+
+
+def bank_delete(request, bank_id):
+    bank = Bank.objects.get(pk=bank_id)
+    if request.method == 'POST':
+        bank.delete()
+        return redirect('banks-list')
+    return render(request, 'bank_delete.html', {'bank': bank})
