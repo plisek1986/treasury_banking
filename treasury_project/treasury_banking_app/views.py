@@ -302,3 +302,11 @@ class BankViewView(View):
         bank = Bank.objects.get(pk=bank_id)
         accounts = bank.account_set.all()
         return render(request, 'bank_view.html', {'bank': bank, 'accounts': accounts})
+
+
+def bank_delete(request, bank_id):
+    bank = Bank.objects.get(pk=bank_id)
+    if request.method == 'POST':
+        bank.delete()
+        return redirect('banks-list')
+    return render(request, 'bank_delete.html', {'bank': bank})

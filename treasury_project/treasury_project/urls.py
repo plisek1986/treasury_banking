@@ -43,5 +43,6 @@ urlpatterns = [
          name='company-delete-accounts'),
     path('bank_view/<int:bank_id>/', all_views.BankViewView.as_view(), name='bank-view'),
     path('bank_account_delete/<int:bank_id>/<int:account_id>/', all_views.bank_account_delete,
-         name='bank-account-delete')
+         name='bank-account-delete'),
+    path('bank_delete/<int:bank_id>/', all_views.bank_delete, name='bank-delete'),
 ]
