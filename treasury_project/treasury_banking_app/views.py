@@ -3,7 +3,6 @@ from django.views import View
 
 from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm, BankAddForm
 from treasury_banking_app.models import User, Account, ACCESS_CHOICE, Company, Bank
-from django.http import HttpResponseRedirect, HttpResponse
 
 
 class MainPageView(View):

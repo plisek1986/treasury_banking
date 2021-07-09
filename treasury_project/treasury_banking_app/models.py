@@ -1,4 +1,5 @@
 from django.db import models
+from validators import iban_validator
 
 ACCESS_CHOICE = (
     ('CREATE_PAYMENT', 'Create Payment'),
@@ -49,7 +50,7 @@ class Bank(models.Model):
 
 
 class Account(models.Model):
-    iban_number = models.CharField(max_length=64, unique=True)
+    iban_number = models.CharField(max_length=64, unique=True, validators=[iban_validator])
     swift_code = models.CharField(max_length=64)
     bank = models.ForeignKey(Bank, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
