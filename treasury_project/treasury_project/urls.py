@@ -52,5 +52,6 @@ urlpatterns = [
     path('bank_view_delete/<int:bank_id>/', all_views.bank_view_delete, name='bank-view-delete'),
     path('bank_edit/<int:bank_id>/', all_views.BankEditView.as_view(), name='bank-edit'),
     path('access_types_list/', all_views.AccessTypesListView.as_view(), name='accesses-list'),
-
+    path('admin_create/', all_views.AdministratorCreateView.as_view(), name='admin-create'),
+    path('admin_list/', all_views.AdministratorListView.as_view(), name='admins-list')
 ]

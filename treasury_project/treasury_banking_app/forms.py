@@ -14,11 +14,11 @@ class UserCreateForm(forms.Form):
     can_delete_payment = forms.BooleanField(initial=False, required=False)
 
 
-# class AdministratorViewForm(models.Model):
-#     name = forms.CharField(max_length=255, required=True)
-#     surname = forms.CharField(max_length=255, required=True)
-#     login = forms.CharField(max_length=255, required=True)
-#     password = forms.CharField(max_length=64, widget=forms.PasswordInput)
+class AdministratorCreateForm(forms.Form):
+    name = forms.CharField(max_length=255, required=True)
+    surname = forms.CharField(max_length=255, required=True)
+    login = forms.CharField(max_length=255, required=True)
+    password = forms.CharField(max_length=64, widget=forms.PasswordInput)
 
 
 class CompanyCreateForm(forms.Form):

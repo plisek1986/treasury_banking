@@ -4,9 +4,9 @@
 <form action="" method="POST">
     {% csrf_token %}
     <label for="name">Name:</label>
-    <input type="text" id="name" name="name" placeholder="{{company.name}}">
+    <input type="text" id="name" name="name" value="{{company.name}}">
     <label for="country">Country:</label>
-    <input type="text" id="country" name="country" placeholder="{{company.country}}">
+    <input type="text" id="country" name="country" value="{{company.country}}">
     <button type="submit">Save</button>
 </form>
 {{message}}

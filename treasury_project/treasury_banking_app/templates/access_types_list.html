@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
 <p><a href="{% url 'dashboard' %}">Go back</a></p>
-<p><a href="">New access type</a></p>
 <table>
     <thead>
         <tr>
@@ -15,15 +14,12 @@
             {% if access == 'Create Payment' %}
             <td>{{access}}</td>
             <td>User can create payments on all accounts he has access to</td>
-            <td><a href="">Delete</a></td>
             {% elif access == 'Delete Payment' %}
             <td>{{access}}</td>
             <td>User can delete payments on all accounts he has access to</td>
-            <td><a href="">Delete</a></td>
             {% else %}
             <td>{{access}}</td>
             <td>User can approve and release payments on all accounts he has access to</td>
-            <td><a href="">Delete</a></td>
             {% endif %}
         </tr>
         {% endfor %}
