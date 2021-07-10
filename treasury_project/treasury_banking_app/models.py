@@ -50,7 +50,7 @@ class Bank(models.Model):
 
 
 class Account(models.Model):
-    iban_number = models.CharField(max_length=64, unique=True)
-    swift_code = models.CharField(max_length=64)
+    iban_number = models.CharField(max_length=64, unique=True, blank=False, null=False)
+    swift_code = models.CharField(max_length=64, blank=False, null=False)
     bank = models.ForeignKey(Bank, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)

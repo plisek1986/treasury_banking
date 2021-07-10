@@ -7,7 +7,7 @@
 <body>
     <p><a href="{% url 'company-list' %}">Go back</a></p>
     <a href="{% url 'add-account' company_id=company.id %}">Add accounts</a>
-    <a href="{% url 'company-delete' company_id=company.id %}">Delete</a>
+    <a href="{% url 'company-view-delete' company_id=company.id %}">Delete</a>
     <p>Company name: {{company.name}}</p>
     <p>Company country: {{company.country}}</p>
     <h2>Accounts:</h2>
@@ -25,7 +25,6 @@
                     <td>{{account.iban_number}}</td>
                     <td>{{account.swift_code}}</td>
                     <td>{{account.bank}}</td>
-<!--                    <td><a href="{% url 'account-delete' account_id=account.id">Delete</a></td>-->
                     <td><a href="{% url 'company-delete-accounts' company_id=company.id account_id=account.id %}">Delete</a></td>
                 </tr>
             {% endfor %}

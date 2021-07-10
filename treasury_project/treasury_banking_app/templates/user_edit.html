@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<p><a href="{% url 'user-view' user_id=user.id %}">Go back</a></p>
+<p><a href="{% url 'users-list' %}">Go back</a></p>
 <form action="" method="POST">
     {% csrf_token %}
     <label for="user_name">User name:</label>

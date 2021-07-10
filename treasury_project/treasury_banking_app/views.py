@@ -142,6 +142,14 @@ def user_delete(request, user_id):
     return render(request, 'user_delete.html', {'user': user})
 
 
+def user_view_delete(request, user_id):
+    user = User.objects.get(pk=user_id)
+    if request.method == 'POST':
+        user.delete()
+        return redirect('users-list')
+    return render(request, 'user_view_delete.html', {'user': user})
+
+
 class UserAddAccountsView(View):
     def get(self, request, user_id):
         user = User.objects.get(pk=user_id)
@@ -183,7 +191,7 @@ class CompanyCreateView(View):
             name = form.cleaned_data['name']
             country = form.cleaned_data['country']
             if Company.objects.filter(name=name):
-                message = 'Company with this name already exists in database'
+                message = 'Company with this name already exists in database.'
                 return render(request, 'company_create.html', {'form': form, 'message': message})
             Company.objects.create(name=name, country=country)
             return redirect('company-list')
@@ -203,10 +211,19 @@ class CompanyView(View):
 
 
 def company_delete(request, company_id):
-    if request.method == 'GET':
-        company = Company.objects.get(pk=company_id)
+    company = Company.objects.get(pk=company_id)
+    if request.method == 'POST':
         company.delete()
         return redirect('company-list')
+    return render(request, 'company_delete.html', {'company': company})
+
+
+def company_view_delete(request, company_id):
+    company = Company.objects.get(pk=company_id)
+    if request.method == 'POST':
+        company.delete()
+        return redirect('company-list')
+    return render(request, 'company_view_delete.html', {'company': company})
 
 
 class CompanyAddAccountView(View):
@@ -235,6 +252,24 @@ def company_delete_accounts(request, account_id, company_id):
     return render(request, 'company_account_delete.html', {'company': company, 'account': account})
 
 
+class CompanyEditView(View):
+    def get(self, request, company_id):
+        company = Company.objects.get(pk=company_id)
+        return render(request, 'company_edit.html', {'company': company})
+
+    def post(self, request, company_id):
+        company = Company.objects.get(pk=company_id)
+        name = request.POST.get('name')
+        if Company.objects.filter(name=name):
+            message = 'Company with this name already exists in database.'
+            return render(request, 'company_edit.html', {'company': company, 'message': message})
+        country = request.POST.get('country')
+        company.name = name
+        company.country = country
+        company.save()
+        return redirect('company-list')
+
+
 class AccountCreateView(View):
     def get(self, request):
         banks = Bank.objects.all()
@@ -242,7 +277,12 @@ class AccountCreateView(View):
         return render(request, 'account_create.html', {'banks': banks, 'companies': companies})
 
     def post(self, request):
+        banks = Bank.objects.all()
+        companies = Company.objects.all()
         iban_number = request.POST.get('iban')
+        if not iban_number:
+            message = 'Please provide iban number.'
+            return render(request, 'account_create.html', {'banks': banks, 'companies': companies, 'message': message})
         swift_code = request.POST.get('swift')
         bank = request.POST.get('bank')
         bank = Bank.objects.get(name=bank)
@@ -260,9 +300,33 @@ class AccountListView(View):
 
 
 def account_delete(request, account_id):
-    if request.method == 'GET':
-        account = Account.objects.get(pk=account_id)
+    account = Account.objects.get(pk=account_id)
+    if request.method == 'POST':
         account.delete()
+        return redirect('accounts-list')
+    return render(request, 'account_delete.html', {'account': account})
+
+
+class AccountEditView(View):
+    def get(self, request, account_id):
+        account = Account.objects.get(pk=account_id)
+        return render(request, 'account_edit.html', {'account': account})
+
+    def post(self, request, account_id):
+        account = Account.objects.get(pk=account_id)
+        iban_number = request.POST.get('iban')
+        if not iban_number:
+            message = 'Please provide iban number.'
+            return render(request, 'account_edit.html', {'account': account, 'message': message})
+        elif Account.objects.filter(iban_number=iban_number) and iban_number != account.iban_number:
+            message = 'This iban already exists in the database.'
+            return render(request, 'account_edit.html', {'account': account, 'message': message})
+        else:
+            pass
+        swift_code = request.POST.get('swift')
+        account.iban_number = iban_number
+        account.swift_code = swift_code
+        account.save()
         return redirect('accounts-list')
 
 
@@ -310,3 +374,27 @@ def bank_delete(request, bank_id):
         bank.delete()
         return redirect('banks-list')
     return render(request, 'bank_delete.html', {'bank': bank})
+
+
+def bank_view_delete(request, bank_id):
+    bank = Bank.objects.get(pk=bank_id)
+    if request.method == 'POST':
+        bank.delete()
+        return redirect('banks-list')
+    return render(request, 'bank_view_delete.html', {'bank': bank})
+
+
+class BankEditView(View):
+    def get(self, request, bank_id):
+        bank = Bank.objects.get(pk=bank_id)
+        return render(request, 'bank_edit.html', {'bank': bank})
+
+    def post(self, request, bank_id):
+        bank = Bank.objects.get(pk=bank_id)
+        name = request.POST.get('name')
+        if Bank.objects.filter(name=name) and name != bank.name:
+            message = 'Bank with this name already exists in the database.'
+            return render(request, 'bank_edit.html', {'bank': bank, 'message': message})
+        bank.name = name
+        bank.save()
+        return redirect('banks-list')
