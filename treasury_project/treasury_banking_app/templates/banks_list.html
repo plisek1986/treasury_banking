@@ -13,7 +13,7 @@
         <tr>
             <td>{{bank.name}}</td>
             <td><a href="{% url 'bank-view' bank_id=bank.id %}">View</a></td>
-            <td><a href="">Edit</a></td>
+            <td><a href="{% url 'bank-edit' bank_id=bank.id %}">Edit</a></td>
             <td><a href="{% url 'bank-delete' bank_id=bank.id %}">Delete</a></td>
         </tr>
         {% endfor %}

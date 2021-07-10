@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<p><a href="{% url 'accounts-list' %}">Go back</a></p>
+<form action="" method="POST">
+    {% csrf_token %}
+    <label for="company">Company:</label>
+        <input type="text" name='company' id='company' value='{{account.company}}' disabled>
+    <br>
+    <label for="bank">Bank:</label>
+        <input type="text" name='bank' id='bank' value='{{account.bank}}' disabled>
+    <br>
+    <label for="iban">Iban number:</label>
+        <input type="text" name='iban' id='iban' value="{{account.iban_number}}">
+    <br>
+    <label for="swift">Swift code:</label>
+        <input type="text" name='swift' id='swift' value="{{account.swift_code}}">
+    <br>
+    {{message}}<br>
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

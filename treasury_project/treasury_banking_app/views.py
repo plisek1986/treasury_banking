@@ -307,6 +307,29 @@ def account_delete(request, account_id):
     return render(request, 'account_delete.html', {'account': account})
 
 
+class AccountEditView(View):
+    def get(self, request, account_id):
+        account = Account.objects.get(pk=account_id)
+        return render(request, 'account_edit.html', {'account': account})
+
+    def post(self, request, account_id):
+        account = Account.objects.get(pk=account_id)
+        iban_number = request.POST.get('iban')
+        if not iban_number:
+            message = 'Please provide iban number.'
+            return render(request, 'account_edit.html', {'account': account, 'message': message})
+        elif Account.objects.filter(iban_number=iban_number) and iban_number != account.iban_number:
+            message = 'This iban already exists in the database.'
+            return render(request, 'account_edit.html', {'account': account, 'message': message})
+        else:
+            pass
+        swift_code = request.POST.get('swift')
+        account.iban_number = iban_number
+        account.swift_code = swift_code
+        account.save()
+        return redirect('accounts-list')
+
+
 def bank_account_delete(request, account_id, bank_id):
     account = Account.objects.get(pk=account_id)
     bank = Bank.objects.get(pk=bank_id)
@@ -359,3 +382,19 @@ def bank_view_delete(request, bank_id):
         bank.delete()
         return redirect('banks-list')
     return render(request, 'bank_view_delete.html', {'bank': bank})
+
+
+class BankEditView(View):
+    def get(self, request, bank_id):
+        bank = Bank.objects.get(pk=bank_id)
+        return render(request, 'bank_edit.html', {'bank': bank})
+
+    def post(self, request, bank_id):
+        bank = Bank.objects.get(pk=bank_id)
+        name = request.POST.get('name')
+        if Bank.objects.filter(name=name) and name != bank.name:
+            message = 'Bank with this name already exists in the database.'
+            return render(request, 'bank_edit.html', {'bank': bank, 'message': message})
+        bank.name = name
+        bank.save()
+        return redirect('banks-list')

@@ -6,7 +6,7 @@
 </head>
 <body>
     <p><a href="{% url 'banks-list' %}">Go back</a></p>
-    <a href="">Edit</a>
+    <a href="{% url 'bank-edit' bank_id=bank.id %}">Edit</a>
     <a href="{% url 'bank-view-delete' bank_id=bank.id %}">Delete</a>
     <p>Bank name: {{bank.name}}</p>
     <h2>Accounts:</h2>
