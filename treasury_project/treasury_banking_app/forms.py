@@ -1,7 +1,6 @@
-from django.db import models
 from django import forms
 from django.forms import ModelForm
-from treasury_banking_app.models import Account, ACCESS_CHOICE, Bank, User
+from treasury_banking_app.models import Bank, Access
 
 
 class UserCreateForm(forms.Form):
@@ -33,7 +32,8 @@ class BankAddForm(ModelForm):
         fields = ['name']
 
 
-# class AccountCreateForm(models.Model):
+# class AccessTypesCreateForm(forms.Form):
 #     class Meta:
-#         model = Account()
-#         fields = ['iban_number', 'swift_code', 'bank', 'company']
+#         model = Access
+#         fields = ['access_type']
+

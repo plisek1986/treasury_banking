@@ -1,11 +1,11 @@
 from django.db import models
 # from validators import iban_validator
 
-ACCESS_CHOICE = (
+ACCESS_CHOICE = [
     ('CREATE_PAYMENT', 'Create Payment'),
     ('DELETE_PAYMENT', 'Delete Payment'),
     ('APPROVE_PAYMENT', 'Approve Payment'),
-)
+]
 
 
 class User(models.Model):

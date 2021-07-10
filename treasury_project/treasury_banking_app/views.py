@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm, BankAddForm
-from treasury_banking_app.models import User, Account, ACCESS_CHOICE, Company, Bank
+from treasury_banking_app.models import User, Account, Company, Bank, ACCESS_CHOICE
 
 
 #
@@ -398,3 +398,11 @@ class BankEditView(View):
         bank.name = name
         bank.save()
         return redirect('banks-list')
+
+
+class AccessTypesListView(View):
+    def get(self, request):
+        access_types = []
+        for access in ACCESS_CHOICE:
+            access_types.append(access[1])
+        return render(request, 'access_types_list.html', {'access_types': access_types})
