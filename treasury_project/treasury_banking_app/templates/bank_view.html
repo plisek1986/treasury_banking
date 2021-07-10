@@ -7,7 +7,7 @@
 <body>
     <p><a href="{% url 'banks-list' %}">Go back</a></p>
     <a href="">Edit</a>
-    <a href="">Delete</a>
+    <a href="{% url 'bank-view-delete' bank_id=bank.id %}">Delete</a>
     <p>Bank name: {{bank.name}}</p>
     <h2>Accounts:</h2>
     <table>

@@ -142,6 +142,14 @@ def user_delete(request, user_id):
     return render(request, 'user_delete.html', {'user': user})
 
 
+def user_view_delete(request, user_id):
+    user = User.objects.get(pk=user_id)
+    if request.method == 'POST':
+        user.delete()
+        return redirect('users-list')
+    return render(request, 'user_view_delete.html', {'user': user})
+
+
 class UserAddAccountsView(View):
     def get(self, request, user_id):
         user = User.objects.get(pk=user_id)
@@ -203,10 +211,11 @@ class CompanyView(View):
 
 
 def company_delete(request, company_id):
-    if request.method == 'GET':
-        company = Company.objects.get(pk=company_id)
+    company = Company.objects.get(pk=company_id)
+    if request.method == 'POST':
         company.delete()
         return redirect('company-list')
+    return render(request, 'company_delete.html', {'company': company})
 
 
 class CompanyAddAccountView(View):
@@ -310,3 +319,11 @@ def bank_delete(request, bank_id):
         bank.delete()
         return redirect('banks-list')
     return render(request, 'bank_delete.html', {'bank': bank})
+
+
+def bank_view_delete(request, bank_id):
+    bank = Bank.objects.get(pk=bank_id)
+    if request.method == 'POST':
+        bank.delete()
+        return redirect('banks-list')
+    return render(request, 'bank_view_delete.html', {'bank': bank})
