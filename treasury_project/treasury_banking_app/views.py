@@ -277,7 +277,12 @@ class AccountCreateView(View):
         return render(request, 'account_create.html', {'banks': banks, 'companies': companies})
 
     def post(self, request):
+        banks = Bank.objects.all()
+        companies = Company.objects.all()
         iban_number = request.POST.get('iban')
+        if not iban_number:
+            message = 'Please provide iban number.'
+            return render(request, 'account_create.html', {'banks': banks, 'companies': companies, 'message': message})
         swift_code = request.POST.get('swift')
         bank = request.POST.get('bank')
         bank = Bank.objects.get(name=bank)
@@ -295,10 +300,11 @@ class AccountListView(View):
 
 
 def account_delete(request, account_id):
-    if request.method == 'GET':
-        account = Account.objects.get(pk=account_id)
+    account = Account.objects.get(pk=account_id)
+    if request.method == 'POST':
         account.delete()
         return redirect('accounts-list')
+    return render(request, 'account_delete.html', {'account': account})
 
 
 def bank_account_delete(request, account_id, bank_id):
