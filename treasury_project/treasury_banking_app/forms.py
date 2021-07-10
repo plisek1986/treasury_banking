@@ -7,7 +7,6 @@ class UserCreateForm(forms.Form):
     name = forms.CharField(max_length=255)
     surname = forms.CharField(max_length=255, required=True)
     internal_id = forms.CharField(max_length=7, required=True)
-    # account = forms.MultipleChoiceField(choices=Account.objects.get(pk=2), widget=forms.CheckboxSelectMultiple)
     is_administrator = forms.BooleanField(initial=False, required=False)
     is_payment_creator = forms.BooleanField(initial=False, required=False)
     is_payment_approver = forms.BooleanField(initial=False, required=False)
@@ -17,8 +16,9 @@ class UserCreateForm(forms.Form):
 class AdministratorCreateForm(forms.Form):
     name = forms.CharField(max_length=255, required=True)
     surname = forms.CharField(max_length=255, required=True)
-    login = forms.CharField(max_length=255, required=True)
-    password = forms.CharField(max_length=64, widget=forms.PasswordInput)
+    login = forms.CharField(max_length=7, required=True)
+    password = forms.CharField(max_length=64, widget=forms.PasswordInput, required=True)
+    password_repeat = forms.CharField(max_length=64, widget=forms.PasswordInput, required=True)
 
 
 class CompanyCreateForm(forms.Form):
@@ -32,8 +32,5 @@ class BankAddForm(ModelForm):
         fields = ['name']
 
 
-# class AccessTypesCreateForm(forms.Form):
-#     class Meta:
-#         model = Access
-#         fields = ['access_type']
+
 

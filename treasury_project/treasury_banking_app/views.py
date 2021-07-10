@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views import View
+import hashlib
 
 from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm, BankAddForm, AdministratorCreateForm
 from treasury_banking_app.models import User, Account, Company, Bank, ACCESS_CHOICE, Administrator
@@ -425,4 +426,14 @@ class AdministratorCreateView(View):
             name = form.cleaned_data['name']
             surname = form.cleaned_data['surname']
             login = form.cleaned_data['login']
-            passwor
+            if Administrator.objects.filter(login=login):
+                message = 'Administrator with this login already exists.'
+                return render(request, 'admin_create.html', {'form': form, 'message': message})
+            password = form.cleaned_data['password']
+            password_repeat = form.cleaned_data['password_repeat']
+            if password != password_repeat:
+                message = 'Passwords are not identical.'
+                return render(request, 'admin_create.html', {'form': form, 'message': message})
+            password = hashlib.md5(password.encode('UTF-8'))
+            Administrator.objects.create(name=name, surname=surname, login=login, password=password)
+            return redirect('admins-list')
