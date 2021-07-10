@@ -191,7 +191,7 @@ class CompanyCreateView(View):
             name = form.cleaned_data['name']
             country = form.cleaned_data['country']
             if Company.objects.filter(name=name):
-                message = 'Company with this name already exists in database'
+                message = 'Company with this name already exists in database.'
                 return render(request, 'company_create.html', {'form': form, 'message': message})
             Company.objects.create(name=name, country=country)
             return redirect('company-list')
@@ -218,6 +218,14 @@ def company_delete(request, company_id):
     return render(request, 'company_delete.html', {'company': company})
 
 
+def company_view_delete(request, company_id):
+    company = Company.objects.get(pk=company_id)
+    if request.method == 'POST':
+        company.delete()
+        return redirect('company-list')
+    return render(request, 'company_view_delete.html', {'company': company})
+
+
 class CompanyAddAccountView(View):
     def get(self, request, company_id):
         company = Company.objects.get(pk=company_id)
@@ -242,6 +250,24 @@ def company_delete_accounts(request, account_id, company_id):
         account.delete()
         return redirect(f'/company_view/{company_id}/')
     return render(request, 'company_account_delete.html', {'company': company, 'account': account})
+
+
+class CompanyEditView(View):
+    def get(self, request, company_id):
+        company = Company.objects.get(pk=company_id)
+        return render(request, 'company_edit.html', {'company': company})
+
+    def post(self, request, company_id):
+        company = Company.objects.get(pk=company_id)
+        name = request.POST.get('name')
+        if Company.objects.filter(name=name):
+            message = 'Company with this name already exists in database.'
+            return render(request, 'company_edit.html', {'company': company, 'message': message})
+        country = request.POST.get('country')
+        company.name = name
+        company.country = country
+        company.save()
+        return redirect('company-list')
 
 
 class AccountCreateView(View):
