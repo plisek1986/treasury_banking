@@ -21,6 +21,11 @@ class AdministratorCreateForm(forms.Form):
     password_repeat = forms.CharField(max_length=64, widget=forms.PasswordInput, required=True)
 
 
+# class AdministratorPasswordResetForm(forms.Form):
+#     password = forms.CharField(max_length=64, widget=forms.PasswordInput, required=True)
+#     password_repeat = forms.CharField(max_length=64, widget=forms.PasswordInput, required=True)
+
+
 class CompanyCreateForm(forms.Form):
     name = forms.CharField(max_length=255)
     country = forms.CharField(max_length=255)
@@ -32,5 +37,6 @@ class BankAddForm(ModelForm):
         fields = ['name']
 
 
-
-
+class LoginForm(forms.Form):
+    login = forms.CharField(max_length=64, required=True)
+    password = forms.CharField(max_length=64, widget=forms.PasswordInput, required=True)

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<p><a href="{% url 'main' %}">Go back to the main page</a></p>
+<form action="" method="POST">
+    {% csrf_token %}
+    {{form}}
+    <button type="submit">Login</button>
+</form>
+{{message}}
+{% endblock %}

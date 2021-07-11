@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.views import View
 import hashlib
+import string
 
-from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm, BankAddForm, AdministratorCreateForm
+from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm, BankAddForm, AdministratorCreateForm, \
+    LoginForm
 from treasury_banking_app.models import User, Account, Company, Bank, ACCESS_CHOICE, Administrator, COUNTRY_CHOICE
 
 IBAN_COUNTRY_CODE_LENGTH = {
@@ -17,6 +19,8 @@ IBAN_COUNTRY_CODE_LENGTH = {
     'ES': 24,  # Spain
     'FI': 18,  # Finland
 }
+
+special_characters = '!@#$%^&*()_+-={}[]|\:";<>?,./"' + "'"
 
 
 # 'France': 27,  # France
@@ -299,15 +303,17 @@ class AccountCreateView(View):
             message = 'Please provide iban number.'
             return render(request, 'account_create.html', {'banks': banks, 'companies': companies, 'message': message,
                                                            'country_codes': country_codes})
-        elif iban_country_code in IBAN_COUNTRY_CODE_LENGTH and iban_length != IBAN_COUNTRY_CODE_LENGTH[iban_country_code]:
+        elif iban_country_code in IBAN_COUNTRY_CODE_LENGTH and iban_length != IBAN_COUNTRY_CODE_LENGTH[
+            iban_country_code]:
             message = f'Provided iban number is incorrect. Make sure iban has {IBAN_COUNTRY_CODE_LENGTH[iban_country_code]} characters'
             return render(request, 'account_create.html', {'banks': banks, 'companies': companies, 'message': message,
                                                            'country_codes': country_codes})
         else:
             if Account.objects.filter(iban_number=full_iban):
                 message = 'Provided iban already exists in the database.'
-                return render(request, 'account_create.html', {'banks': banks, 'companies': companies, 'message': message,
-                                                                'country_codes': country_codes})
+                return render(request, 'account_create.html',
+                              {'banks': banks, 'companies': companies, 'message': message,
+                               'country_codes': country_codes})
 
         swift_code = request.POST.get('swift')
         bank = request.POST.get('bank')
@@ -441,6 +447,10 @@ class AdministratorListView(View):
         return render(request, 'admin_list.html', {'admins': admins})
 
 
+def has_specials(input_string):
+    return any(char in special_characters for char in input_string)
+
+
 class AdministratorCreateView(View):
     def get(self, request):
         form = AdministratorCreateForm()
@@ -456,13 +466,73 @@ class AdministratorCreateView(View):
                 message = 'Administrator with this login already exists.'
                 return render(request, 'admin_create.html', {'form': form, 'message': message})
             password = form.cleaned_data['password']
+            if len(password) < 6 or len(password) > 20:
+                message = 'Password needs to consists of 6-20 characters.'
+                return render(request, 'admin_create.html', {'form': form, 'message': message})
+            elif not any(char.isdigit() for char in password):
+                message = 'Password needs to contain at least one digit.'
+                return render(request, 'admin_create.html', {'form': form, 'message': message})
+            elif not any(char.islower() for char in password):
+                message = 'Password needs to contain at least one character [a-z].'
+                return render(request, 'admin_create.html', {'form': form, 'message': message})
+            elif not any(char.isupper() for char in password):
+                message = 'Password needs to contain at least one character [A-Z].'
+                return render(request, 'admin_create.html', {'form': form, 'message': message})
+            elif not has_specials(password):
+                message = 'Password needs to contain at least one special character.'
+                return render(request, 'admin_create.html', {'form': form, 'message': message})
+            else:
+                pass
             password_repeat = form.cleaned_data['password_repeat']
             if password != password_repeat:
                 message = 'Passwords are not identical.'
                 return render(request, 'admin_create.html', {'form': form, 'message': message})
             password = hashlib.md5(password.encode('UTF-8'))
+            password = password.hexdigest()
             Administrator.objects.create(name=name, surname=surname, login=login, password=password)
             return redirect('admins-list')
+
+
+class AdministratorPasswordReset(View):
+    def get(self, request, admin_id):
+        administrator = Administrator.objects.get(pk=admin_id)
+        return render(request, 'admin_password_reset.html', {'administrator': administrator})
+
+    def post(self, request, admin_id):
+        administrator = Administrator.objects.get(pk=admin_id)
+        password = request.POST.get('password')
+        if len(password) < 6 or len(password) > 20:
+            message = 'Password needs to consists of 6-20 characters.'
+            return render(request, 'admin_password_reset.html', {'administrator': administrator,
+                                                                 'message': message})
+        elif not any(char.isdigit() for char in password):
+            message = 'Password needs to contain at least one digit.'
+            return render(request, 'admin_password_reset.html', {'administrator': administrator,
+                                                                 'message': message})
+        elif not any(char.islower() for char in password):
+            message = 'Password needs to contain at least one character [a-z].'
+            return render(request, 'admin_password_reset.html', {'administrator': administrator,
+                                                                 'message': message})
+        elif not any(char.isupper() for char in password):
+            message = 'Password needs to contain at least one character [A-Z].'
+            return render(request, 'admin_password_reset.html', {'administrator': administrator,
+                                                                 'message': message})
+        elif not has_specials(password):
+            message = 'Password needs to contain at least one special character.'
+            return render(request, 'admin_password_reset.html', {'administrator': administrator,
+                                                                 'message': message})
+        else:
+            pass
+        password_repeat = request.POST.get('repeat_password')
+        if password != password_repeat:
+            message = 'Passwords are not identical.'
+            return render(request, 'admin_password_reset.html', {'administrator': administrator,
+                                                                 'message': message})
+        password = hashlib.md5(password.encode('UTF-8'))
+        password = password.hexdigest()
+        administrator.password = password
+        administrator.save()
+        return redirect('admins-list')
 
 
 def administrator_delete(request, admin_id):
@@ -471,3 +541,29 @@ def administrator_delete(request, admin_id):
         admin.delete()
         return redirect('admins-list')
     return render(request, 'admin_delete.html', {'admin': admin})
+
+
+class LoginView(View):
+    def get(self, request):
+        form = LoginForm()
+        return render(request, 'login.html', {'form': form})
+
+    def post(self, request):
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            login = form.cleaned_data['login']
+            password = form.cleaned_data['password']
+            password = hashlib.md5(password.encode('UTF-8'))
+            password = password.hexdigest()
+            if Administrator.objects.filter(login=login, password=password):
+
+                return redirect('dashboard')
+            else:
+                message = 'Authentication failed. Please try again.'
+                return render(request, 'login.html', {'form': form, 'message': message})
+
+
+def log_out(request):
+    if request.method == 'POST':
+        return redirect('main')
+    return render(request, 'log_out.html')
