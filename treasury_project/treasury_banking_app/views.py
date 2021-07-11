@@ -437,3 +437,11 @@ class AdministratorCreateView(View):
             password = hashlib.md5(password.encode('UTF-8'))
             Administrator.objects.create(name=name, surname=surname, login=login, password=password)
             return redirect('admins-list')
+
+
+def administrator_delete(request, admin_id):
+    admin = Administrator.objects.get(pk=admin_id)
+    if request.method == 'POST':
+        admin.delete()
+        return redirect('admins-list')
+    return render(request, 'admin_delete.html', {'admin': admin})
