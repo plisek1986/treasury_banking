@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 import hashlib
-import string
+from django.contrib.auth import authenticate, login, logout
 
 from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm, BankAddForm, AdministratorCreateForm, \
     LoginForm
@@ -555,9 +555,9 @@ class LoginView(View):
             password = form.cleaned_data['password']
             password = hashlib.md5(password.encode('UTF-8'))
             password = password.hexdigest()
-            if Administrator.objects.filter(login=login, password=password):
-
-                return redirect('dashboard')
+            logged_admin = Administrator.objects.get(login=login, password=password)
+            if logged_admin is not None:
+                return render(request, 'dashboard.html', {'logged_admin': logged_admin})
             else:
                 message = 'Authentication failed. Please try again.'
                 return render(request, 'login.html', {'form': form, 'message': message})
