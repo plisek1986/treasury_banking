@@ -1,6 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
 <p><a href="{% url 'company-list' %}">Go back</a></p>
-{% include 'default.html' %}
+<form action="" method="POST">
+    {% csrf_token %}
+<label for="name">Name:</label>
+<input type="text" id="name" name="name">
+
+<label for="country">Country:</label>
+<select name="country" id="country">
+    {% for country in countries %}
+    <option value="{{country}}">{{country}}</option>
+    {% endfor %}
+</select><br>
+    <button type="submit">Save</button>
+</form>
 {{message}}
 {% endblock %}

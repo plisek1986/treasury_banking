@@ -3,42 +3,40 @@ from django.views import View
 import hashlib
 
 from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm, BankAddForm, AdministratorCreateForm
-from treasury_banking_app.models import User, Account, Company, Bank, ACCESS_CHOICE, Administrator
+from treasury_banking_app.models import User, Account, Company, Bank, ACCESS_CHOICE, Administrator, COUNTRY_CHOICE
 
-
-#
-# IBAN_COUNTRY_CODE_LENGTH = {
-#     'Austria': 20,  # Austria
-#     'Belgium': 16,  # Belgium
-#     'Bulgaria': 22,  # Bulgaria
-#     'Switzerland': 21,  # Switzerland
-#     'Czech Republic': 24,  # Czech Republic
-#     'Germany': 22,  # Germany
-#     'Denmark': 18,  # Denmark
-#     'Estonia': 20,  # Estonia
-#     'Spain': 24,  # Spain
-#     'Finland': 18,  # Finland
-#     'France': 27,  # France
-#     'United Kingdom': 22,  # United Kingdom + Guernsey, Isle of Man, Jersey
-#     'GR': 27,  # Greece
-#     'HR': 21,  # Croatia
-#     'HU': 28,  # Hungary
-#     'IE': 22,  # Ireland
-#     'IS': 26,  # Iceland
-#     'IT': 27,  # Italy
-#     'KZ': 20,  # Kazakhstan
-#     'LT': 20,  # Lithuania
-#     'LV': 21,  # Latvia
-#     'NL': 18,  # Netherlands
-#     'NO': 15,  # Norway
-#     'PL': 28,  # Poland
-#     'PT': 25,  # Portugal
-#     'RO': 24,  # Romania
-#     'SE': 24,  # Sweden
-#     'SI': 19,  # Slovenia
-#     'SK': 24,  # Slovakia
-#     'TR': 26,  # Turkey
-# }
+# IBAN_COUNTRY_CODE_LENGTH = [
+#     ('Austria', 'AT', 20),  # Austria
+#     ('Belgium', 'BE', 16),  # Belgium
+#     ('Bulgaria', 'BG', 22),  # Bulgaria
+#     ('Switzerland', 'CH', 21),  # Switzerland
+#     ('Czech Republic', 'CZ', 24),  # Czech Republic
+#     ('Germany', 'DE', 22),  # Germany
+#     ('Denmark', 'DE', 18),  # Denmark
+#     ('Estonia', 'EE', 20),  # Estonia
+#     ('Spain', 'ES', 24),  # Spain
+#     ('Finland', 'FI', 18),  # Finland
+    # 'France': 27,  # France
+    # 'United Kingdom': 22,  # United Kingdom + Guernsey, Isle of Man, Jersey
+    # 'GR': 27,  # Greece
+    # 'HR': 21,  # Croatia
+    # 'HU': 28,  # Hungary
+    # 'IE': 22,  # Ireland
+    # 'IS': 26,  # Iceland
+    # 'IT': 27,  # Italy
+    # 'KZ': 20,  # Kazakhstan
+    # 'LT': 20,  # Lithuania
+    # 'LV': 21,  # Latvia
+    # 'NL': 18,  # Netherlands
+    # 'NO': 15,  # Norway
+    # 'PL': 28,  # Poland
+    # 'PT': 25,  # Portugal
+    # 'RO': 24,  # Romania
+    # 'SE': 24,  # Sweden
+    # 'SI': 19,  # Slovenia
+    # 'SK': 24,  # Slovakia
+    # 'TR': 26,  # Turkey
+# ]
 
 
 class MainPageView(View):
@@ -183,19 +181,22 @@ def user_remove_accounts(request, user_id, account_id):
 
 class CompanyCreateView(View):
     def get(self, request):
-        form = CompanyCreateForm()
-        return render(request, 'company_create.html', {'form': form})
+        countries = []
+        for country in COUNTRY_CHOICE:
+            countries.append(country[0])
+        return render(request, 'company_create.html', {'countries': countries})
 
     def post(self, request):
-        form = CompanyCreateForm(request.POST)
-        if form.is_valid():
-            name = form.cleaned_data['name']
-            country = form.cleaned_data['country']
-            if Company.objects.filter(name=name):
-                message = 'Company with this name already exists in database.'
-                return render(request, 'company_create.html', {'form': form, 'message': message})
-            Company.objects.create(name=name, country=country)
-            return redirect('company-list')
+        name = request.POST.get('name')
+        country = request.POST.get('country')
+        countries = []
+        for choice in COUNTRY_CHOICE:
+            countries.append(choice[0])
+        if Company.objects.filter(name=name):
+            message = 'Company with this name already exists in database.'
+            return render(request, 'company_create.html', {'message': message, 'countries': countries})
+        Company.objects.create(name=name, country=country)
+        return redirect('company-list')
 
 
 class CompanyListView(View):
@@ -280,6 +281,7 @@ class AccountCreateView(View):
     def post(self, request):
         banks = Bank.objects.all()
         companies = Company.objects.all()
+
         iban_number = request.POST.get('iban')
         if not iban_number:
             message = 'Please provide iban number.'
@@ -297,7 +299,8 @@ class AccountCreateView(View):
 class AccountListView(View):
     def get(self, request):
         accounts = Account.objects.all().order_by('-company')
-        return render(request, 'account_list.html', {'accounts': accounts})
+        companies = Company.objects.all()
+        return render(request, 'account_list.html', {'accounts': accounts, 'companies': companies})
 
 
 def account_delete(request, account_id):
