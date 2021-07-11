@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.views import View
+import hashlib
 
-from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm, BankAddForm
-from treasury_banking_app.models import User, Account, ACCESS_CHOICE, Company, Bank
+from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm, BankAddForm, AdministratorCreateForm
+from treasury_banking_app.models import User, Account, Company, Bank, ACCESS_CHOICE, Administrator
 
 
 #
@@ -349,7 +350,7 @@ class BankAddView(View):
         if form.is_valid():
             name = form.cleaned_data['name']
             if Bank.objects.filter(name=name):
-                message = 'This bank already exists in database'
+                message = 'This bank already exists in database.'
                 return render(request, 'bank_add.html', {'form': form, 'message': message})
             Bank.objects.create(name=name)
             return redirect('banks-list')
@@ -398,3 +399,49 @@ class BankEditView(View):
         bank.name = name
         bank.save()
         return redirect('banks-list')
+
+
+class AccessTypesListView(View):
+    def get(self, request):
+        access_types = []
+        for access in ACCESS_CHOICE:
+            access_types.append(access[1])
+        return render(request, 'access_types_list.html', {'access_types': access_types})
+
+
+class AdministratorListView(View):
+    def get(self, request):
+        admins = Administrator.objects.all()
+        return render(request, 'admin_list.html', {'admins': admins})
+
+
+class AdministratorCreateView(View):
+    def get(self, request):
+        form = AdministratorCreateForm()
+        return render(request, 'admin_create.html', {'form': form})
+
+    def post(self, request):
+        form = AdministratorCreateForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            surname = form.cleaned_data['surname']
+            login = form.cleaned_data['login']
+            if Administrator.objects.filter(login=login):
+                message = 'Administrator with this login already exists.'
+                return render(request, 'admin_create.html', {'form': form, 'message': message})
+            password = form.cleaned_data['password']
+            password_repeat = form.cleaned_data['password_repeat']
+            if password != password_repeat:
+                message = 'Passwords are not identical.'
+                return render(request, 'admin_create.html', {'form': form, 'message': message})
+            password = hashlib.md5(password.encode('UTF-8'))
+            Administrator.objects.create(name=name, surname=surname, login=login, password=password)
+            return redirect('admins-list')
+
+
+def administrator_delete(request, admin_id):
+    admin = Administrator.objects.get(pk=admin_id)
+    if request.method == 'POST':
+        admin.delete()
+        return redirect('admins-list')
+    return render(request, 'admin_delete.html', {'admin': admin})

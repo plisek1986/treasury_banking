@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<p><a href="{% url 'dashboard' %}">Go back</a></p>
+<p><a href="{% url 'admin-create' %}">Create new</a></p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Login</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for admin in admins %}
+        <tr>
+            <td>{{admin.name}}</td>
+            <td>{{admin.surname}}</td>
+            <td>{{admin.login}}</td>
+            <td><a href="">Password reset</a></td>
+            <td><a href="{% url 'admin-delete' admin_id=admin.id %}">Delete</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

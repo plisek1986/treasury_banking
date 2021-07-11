@@ -1,11 +1,11 @@
 from django.db import models
 # from validators import iban_validator
 
-ACCESS_CHOICE = (
+ACCESS_CHOICE = [
     ('CREATE_PAYMENT', 'Create Payment'),
     ('DELETE_PAYMENT', 'Delete Payment'),
     ('APPROVE_PAYMENT', 'Approve Payment'),
-)
+]
 
 
 class User(models.Model):
@@ -30,8 +30,9 @@ class Access(models.Model):
 class Administrator(models.Model):
     name = models.CharField(max_length=255, blank=False)
     surname = models.CharField(max_length=255, blank=False)
-    login = models.CharField(max_length=255, blank=False)
-    password = models.CharField(max_length=64)
+    login = models.CharField(max_length=7, blank=False, unique=True)
+    password = models.CharField(max_length=64, blank=False, null=False)
+    password_repeat = models.CharField(max_length=64, blank=False, null=False)
 
 
 class Company(models.Model):

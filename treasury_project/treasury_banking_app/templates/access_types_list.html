@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<p><a href="{% url 'dashboard' %}">Go back</a></p>
+<table>
+    <thead>
+        <tr>
+            <th>Access type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for access in access_types %}
+        <tr>
+            {% if access == 'Create Payment' %}
+            <td>{{access}}</td>
+            <td>User can create payments on all accounts he has access to</td>
+            {% elif access == 'Delete Payment' %}
+            <td>{{access}}</td>
+            <td>User can delete payments on all accounts he has access to</td>
+            {% else %}
+            <td>{{access}}</td>
+            <td>User can approve and release payments on all accounts he has access to</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
