@@ -32,5 +32,6 @@ class BankAddForm(ModelForm):
         fields = ['name']
 
 
-
-
+class LoginForm(forms.Form):
+    login = forms.CharField(max_length=64, required=True)
+    password = forms.CharField(max_length=64, widget=forms.PasswordInput, required=True)
