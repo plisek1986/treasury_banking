@@ -15,7 +15,7 @@ COUNTRY_CHOICE = [
     ('Switzerland', 'CH'),  # Switzerland
     ('Czech Republic', 'CZ'),  # Czech Republic
     ('Germany', 'DE'),  # Germany
-    ('Denmark', 'DE'),  # Denmark
+    ('Denmark', 'DK'),  # Denmark
     ('Estonia', 'EE'),  # Estonia
     ('Spain', 'ES'),  # Spain
     ('Finland', 'FI'),  # Finland
