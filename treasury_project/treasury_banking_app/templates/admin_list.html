@@ -17,7 +17,8 @@
             <td>{{admin.name}}</td>
             <td>{{admin.surname}}</td>
             <td>{{admin.login}}</td>
-            <td><a href="">Password reset</a></td>
+            <td><a href="">Edit</a></td>
+            <td><a href="{% url 'admin-password-reset' admin_id=admin.id %}">Password reset</a></td>
             <td><a href="{% url 'admin-delete' admin_id=admin.id %}">Delete</a></td>
         </tr>
     {% endfor %}

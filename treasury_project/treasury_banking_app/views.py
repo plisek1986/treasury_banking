@@ -493,6 +493,43 @@ class AdministratorCreateView(View):
             return redirect('admins-list')
 
 
+class AdministratorPasswordReset(View):
+    def get(self, request, admin_id):
+        administrator = Administrator.objects.get(pk=admin_id)
+        return render(request, 'admin_password_reset.html', {'administrator': administrator})
+
+    def post(self, request, admin_id):
+        administrator = Administrator.objects.get(pk=admin_id)
+        password = request.POST.get('password')
+        if len(password) < 6 or len(password) > 20:
+            message = 'Password needs to consists of 6-20 characters.'
+            return render(request, 'admin_password_reset.html', {'administrator': administrator,
+                                                                 'message': message})
+        elif not any(char.isdigit() for char in password):
+            message = 'Password needs to contain at least one digit.'
+            return render(request, 'admin_password_reset.html', {'administrator': administrator,
+                                                                 'message': message})
+        elif not any(char.islower() for char in password):
+            message = 'Password needs to contain at least one character [a-z].'
+            return render(request, 'admin_password_reset.html', {'administrator': administrator,
+                                                                 'message': message})
+        elif not any(char.isupper() for char in password):
+            message = 'Password needs to contain at least one character [A-Z].'
+            return render(request, 'admin_password_reset.html', {'administrator': administrator,
+                                                                 'message': message})
+        elif not has_specials(password):
+            message = 'Password needs to contain at least one special character.'
+            return render(request, 'admin_password_reset.html', {'administrator': administrator,
+                                                                 'message': message})
+        else:
+            pass
+        password_repeat = request.POST.get('repeat_password')
+        if password != password_repeat:
+            message = 'Passwords are not identical.'
+            return render(request, 'admin_password_reset.html', {'administrator': administrator,
+                                                                 'message': message})
+
+
 def administrator_delete(request, admin_id):
     admin = Administrator.objects.get(pk=admin_id)
     if request.method == 'POST':
