@@ -45,8 +45,8 @@ class Administrator(models.Model):
     name = models.CharField(max_length=255, blank=False)
     surname = models.CharField(max_length=255, blank=False)
     login = models.CharField(max_length=7, blank=False, unique=True)
-    password = models.CharField(max_length=20, blank=False, null=False)
-    password_repeat = models.CharField(max_length=20, blank=False, null=False)
+    password = models.CharField(max_length=64, blank=False, null=False)
+    password_repeat = models.CharField(max_length=64, blank=False, null=False)
 
 
 class Company(models.Model):

@@ -528,6 +528,11 @@ class AdministratorPasswordReset(View):
             message = 'Passwords are not identical.'
             return render(request, 'admin_password_reset.html', {'administrator': administrator,
                                                                  'message': message})
+        password = hashlib.md5(password.encode('UTF-8'))
+        password = password.hexdigest()
+        administrator.password = password
+        administrator.save()
+        return redirect('admins-list')
 
 
 def administrator_delete(request, admin_id):
