@@ -3,8 +3,13 @@
 <p><a href="{% url 'accounts-list' %}">Go back</a></p>
 <form action="" method="POST">
     {% csrf_token %}
-  <label for="iban">Iban number:</label>
-<input type="text" id="iban" name="iban"><br>
+    <label for="iban">Iban number:</label>
+    <select name="iban1" id="iban">
+        {% for country_code in country_codes %}
+    <option value="{{country_code}}">{{country_code}}</option>
+        {% endfor %}
+    </select>
+    <input type="text" name="iban2" id="iban"><br>
 <label for="swift">Swift code:</label>
 <input type="text" id="swift" name="swift"><br>
 <label for="bank">Bank:</label>
@@ -18,7 +23,7 @@
     {% for company in companies %}
     <option value="{{company.name}}">{{company.name}}</option>
     {% endfor %}
-</select>
+</select><br>
     <button type="submit">Save</button>
 </form>
 {{message}}

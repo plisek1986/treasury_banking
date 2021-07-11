@@ -6,6 +6,7 @@
     <thead>
         <tr>
             <th>Company</th>
+            <th>Country</th>
             <th>Bank</th>
             <th>Iban number</th>
             <th>Swift</th>
@@ -15,6 +16,7 @@
         {% for account in accounts %}
         <tr>
             <td>{{account.company}}</td>
+            <td>{{account.company.country}}</td>
             <td>{{account.bank}}</td>
             <td>{{account.iban_number}}</td>
             <td>{{account.swift_code}}</td>

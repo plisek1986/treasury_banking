@@ -1,10 +1,24 @@
 from django.db import models
+
 # from validators import iban_validator
 
 ACCESS_CHOICE = [
     ('CREATE_PAYMENT', 'Create Payment'),
     ('DELETE_PAYMENT', 'Delete Payment'),
     ('APPROVE_PAYMENT', 'Approve Payment'),
+]
+
+COUNTRY_CHOICE = [
+    ('Austria', 'AT'),  # Austria
+    ('Belgium', 'BE'),  # Belgium
+    ('Bulgaria', 'BG'),  # Bulgaria
+    ('Switzerland', 'CH'),  # Switzerland
+    ('Czech Republic', 'CZ'),  # Czech Republic
+    ('Germany', 'DE'),  # Germany
+    ('Denmark', 'DK'),  # Denmark
+    ('Estonia', 'EE'),  # Estonia
+    ('Spain', 'ES'),  # Spain
+    ('Finland', 'FI'),  # Finland
 ]
 
 
@@ -36,8 +50,8 @@ class Administrator(models.Model):
 
 
 class Company(models.Model):
-    name = models.CharField(max_length=255, unique=True)
-    country = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True, blank=False)
+    country = models.CharField(max_length=64, choices=COUNTRY_CHOICE)
 
     def __str__(self):
         return self.name
@@ -52,6 +66,6 @@ class Bank(models.Model):
 
 class Account(models.Model):
     iban_number = models.CharField(max_length=64, unique=True, blank=False, null=False)
-    swift_code = models.CharField(max_length=64, blank=False, null=False)
+    swift_code = models.CharField(max_length=11, blank=False, null=False)
     bank = models.ForeignKey(Bank, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
