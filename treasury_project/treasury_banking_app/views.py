@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 import hashlib
-from django.contrib.auth import authenticate
+import string
 
 from treasury_banking_app.forms import UserCreateForm, CompanyCreateForm, BankAddForm, AdministratorCreateForm, \
     LoginForm
@@ -19,6 +19,8 @@ IBAN_COUNTRY_CODE_LENGTH = {
     'ES': 24,  # Spain
     'FI': 18,  # Finland
 }
+
+special_characters = '!@#$%^&*()_+-={}[]|\:";<>?,./"' + "'"
 
 
 # 'France': 27,  # France
@@ -445,6 +447,10 @@ class AdministratorListView(View):
         return render(request, 'admin_list.html', {'admins': admins})
 
 
+def has_specials(input_string):
+    return any(char in special_characters for char in input_string)
+
+
 class AdministratorCreateView(View):
     def get(self, request):
         form = AdministratorCreateForm()
@@ -460,6 +466,23 @@ class AdministratorCreateView(View):
                 message = 'Administrator with this login already exists.'
                 return render(request, 'admin_create.html', {'form': form, 'message': message})
             password = form.cleaned_data['password']
+            if len(password) < 6 or len(password) > 20:
+                message = 'Password needs to consists of 6-20 characters.'
+                return render(request, 'admin_create.html', {'form': form, 'message': message})
+            elif not any(char.isdigit() for char in password):
+                message = 'Password needs to contain at least one digit.'
+                return render(request, 'admin_create.html', {'form': form, 'message': message})
+            elif not any(char.islower() for char in password):
+                message = 'Password needs to contain at least one character [a-z].'
+                return render(request, 'admin_create.html', {'form': form, 'message': message})
+            elif not any(char.isupper() for char in password):
+                message = 'Password needs to contain at least one character [A-Z].'
+                return render(request, 'admin_create.html', {'form': form, 'message': message})
+            elif not has_specials(password):
+                message = 'Password needs to contain at least one special character.'
+                return render(request, 'admin_create.html', {'form': form, 'message': message})
+            else:
+                pass
             password_repeat = form.cleaned_data['password_repeat']
             if password != password_repeat:
                 message = 'Passwords are not identical.'
@@ -496,3 +519,9 @@ class LoginView(View):
             else:
                 message = 'Authentication failed. Please try again.'
                 return render(request, 'login.html', {'form': form, 'message': message})
+
+
+def log_out(request):
+    if request.method == 'POST':
+        return redirect('main')
+    return render(request, 'log_out.html')

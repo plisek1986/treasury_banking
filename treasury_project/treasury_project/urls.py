@@ -56,4 +56,5 @@ urlpatterns = [
     path('admin_list/', all_views.AdministratorListView.as_view(), name='admins-list'),
     path('admin_delete/<int:admin_id>/', all_views.administrator_delete, name='admin-delete'),
     path('login/', all_views.LoginView.as_view(), name='login'),
+    path('log_out/', all_views.log_out, name='log-out'),
 ]
