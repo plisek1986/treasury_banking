@@ -48,6 +48,9 @@ class Administrator(models.Model):
     password = models.CharField(max_length=64, blank=False, null=False)
     password_repeat = models.CharField(max_length=64, blank=False, null=False)
 
+    def __str__(self):
+        return self.name
+
 
 class Company(models.Model):
     name = models.CharField(max_length=255, unique=True, blank=False)
