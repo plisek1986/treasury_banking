@@ -555,12 +555,13 @@ class LoginView(View):
             password = form.cleaned_data['password']
             password = hashlib.md5(password.encode('UTF-8'))
             password = password.hexdigest()
-            logged_admin = Administrator.objects.get(login=login, password=password)
-            if logged_admin is not None:
-                return render(request, 'dashboard.html', {'logged_admin': logged_admin})
-            else:
+            administrator = Administrator.objects.filter(login=login, password=password)
+            if not administrator:
                 message = 'Authentication failed. Please try again.'
                 return render(request, 'login.html', {'form': form, 'message': message})
+            else:
+                logged_admin = Administrator.objects.get(login=login)
+                return render(request, 'dashboard.html', {'logged_admin': logged_admin})
 
 
 def log_out(request):
