@@ -59,3 +59,6 @@ def test_administrator_create_view(client):
 @pytest.mark.django_db
 def test_administrator_model(administrator):
     assert Administrator.objects.get(surname='Paluch') == administrator
+
+
+@pytest.
