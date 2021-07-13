@@ -2,6 +2,23 @@
 {% block content %}
 <p><a href="{% url 'dashboard' %}">Go back</a></p>
 <a href="{% url 'account-create' %}">Create account</a>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 70%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
 <table>
     <thead>
         <tr>
@@ -10,6 +27,7 @@
             <th>Bank</th>
             <th>Iban number</th>
             <th>Swift</th>
+            <th colspan="2">Additional options</th>
         </tr>
     </thead>
     <tbody>

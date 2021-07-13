@@ -100,7 +100,17 @@ class UserView(View):
     def get(self, request, user_id):
         user = User.objects.get(pk=user_id)
         accounts = user.account.all()
-        return render(request, 'user_view.html', {'user': user, 'accounts': accounts})
+        ctx = {'name': user.name,
+               'user_id': user.id,
+               'surname': user.surname,
+               'internal_id': user.internal_id,
+               'is_administrator': user.is_administrator,
+               'is_payment_creator': user.is_payment_creator,
+               'is_payment_approver': user.is_payment_approver,
+               'can_delete_payment': user.can_delete_payment,
+               'accounts': accounts,
+               }
+        return render(request, 'user_view.html', ctx)
 
 
 # View where admin can modify details related to the user, including adding or removing accounts
@@ -268,15 +278,17 @@ class CompanyAddAccountView(View):
             message = 'Please provide iban number.'
             return render(request, 'company_add_account.html', {'banks': banks, 'company': company, 'message': message,
                                                                 'country_codes': country_codes})
-        elif iban_country_code in IBAN_COUNTRY_CODE_LENGTH and iban_length != IBAN_COUNTRY_CODE_LENGTH[iban_country_code]:
+        elif iban_country_code in IBAN_COUNTRY_CODE_LENGTH and iban_length != IBAN_COUNTRY_CODE_LENGTH[
+            iban_country_code]:
             message = f'Provided iban number is incorrect. Make sure iban has {IBAN_COUNTRY_CODE_LENGTH[iban_country_code]} characters'
             return render(request, 'company_add_account.html', {'banks': banks, 'company': company, 'message': message,
-                                                           'country_codes': country_codes})
+                                                                'country_codes': country_codes})
         else:
             if Account.objects.filter(iban_number=full_iban):
                 message = 'Provided iban already exists in the database.'
-                return render(request, 'company_add_account.html', {'banks': banks, 'company': company, 'message': message,
-                                                                    'country_codes': country_codes})
+                return render(request, 'company_add_account.html',
+                              {'banks': banks, 'company': company, 'message': message,
+                               'country_codes': country_codes})
 
         swift_code = request.POST.get('swift')
         if len(swift_code) > 11:
@@ -285,8 +297,6 @@ class CompanyAddAccountView(View):
                                                                 'country_codes': country_codes})
         bank = request.POST.get('bank')
         bank = Bank.objects.get(name=bank)
-        # company = request.POST.get('company')
-        # company = Company.objects.get(name=company)
         Account.objects.create(iban_number=full_iban, swift_code=swift_code, bank=bank, company=company)
         return redirect(f'/company_view/{company_id}/')
 
@@ -355,6 +365,10 @@ class AccountCreateView(View):
                                'country_codes': country_codes})
 
         swift_code = request.POST.get('swift')
+        if len(swift_code) > 11:
+            message = 'Provided swift code is too long, swift can have maximum of 11 characters'
+            return render(request, 'account_create.html', {'banks': banks, 'companies': companies, 'message': message,
+                                                           'country_codes': country_codes})
         bank = request.POST.get('bank')
         bank = Bank.objects.get(name=bank)
         company = request.POST.get('company')
@@ -580,6 +594,19 @@ def administrator_delete(request, admin_id):
         admin.delete()
         return redirect('admins-list')
     return render(request, 'admin_delete.html', {'admin': admin})
+
+
+class AdministratorEditView(View):
+    def get(self, request, admin_id):
+        administrator = Administrator.objects.get(pk=admin_id)
+        return render(request, 'admin_edit.html', {'administrator': administrator})
+
+    def get(self, request, admin_id):
+        administrator = Administrator.objects.get(pk=admin_id)
+        surname = request.POST.get('surname')
+        administrator.surname = surname
+        administrator.save()
+        return redirect('admin-list')
 
 
 class LoginView(View):

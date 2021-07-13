@@ -1,5 +1,5 @@
 import pytest
-from treasury_banking_app.models import User, Company, Administrator
+from treasury_banking_app.models import User, Company, Administrator, Account
 
 
 @pytest.mark.django_db
@@ -61,4 +61,4 @@ def test_administrator_model(administrator):
     assert Administrator.objects.get(surname='Paluch') == administrator
 
 
-@pytest.
+
