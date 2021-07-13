@@ -45,17 +45,19 @@ special_characters = '!@#$%^&*()_+-={}[]|\:";<>?,./"' + "'"
 # 'TR': 26,  # Turkey
 # ]
 
-
+# The main view of the platform
 class MainPageView(View):
     def get(self, request):
         return render(request, 'main_page.html')
 
 
+# View lists main functionalities of the platform
 class DashboardView(View):
     def get(self, request):
         return render(request, 'dashboard.html')
 
 
+# View lists user creation fields and includes necessary validations
 class UserCreateView(View):
     def get(self, request):
         form = UserCreateForm()
@@ -86,12 +88,14 @@ class UserCreateView(View):
             return redirect('/users_list/')
 
 
+# View lists all users having assigned priviledges
 class UsersListView(View):
     def get(self, request):
         users = User.objects.all()
         return render(request, 'users_list.html', {'users': users})
 
 
+# View displays all details of the user including accounts to which user has access
 class UserView(View):
     def get(self, request, user_id):
         user = User.objects.get(pk=user_id)
@@ -99,6 +103,7 @@ class UserView(View):
         return render(request, 'user_view.html', {'user': user, 'accounts': accounts})
 
 
+# View where admin can modify details related to the user, including adding or removing accounts
 class UserEditView(View):
     def get(self, request, user_id):
         user = User.objects.get(pk=user_id)
@@ -140,6 +145,7 @@ class UserEditView(View):
         return redirect(f'/user_view/{user_id}/')
 
 
+# View for deleting user with confirming intention to remove the user
 def user_delete(request, user_id):
     user = User.objects.get(pk=user_id)
     if request.method == 'POST':
@@ -148,6 +154,7 @@ def user_delete(request, user_id):
     return render(request, 'user_delete.html', {'user': user})
 
 
+# View for deleting user with confirming intention to remove the user (view available inside the user view)
 def user_view_delete(request, user_id):
     user = User.objects.get(pk=user_id)
     if request.method == 'POST':
@@ -156,6 +163,7 @@ def user_view_delete(request, user_id):
     return render(request, 'user_view_delete.html', {'user': user})
 
 
+# View for adding new accounts to which the user can have permissions
 class UserAddAccountsView(View):
     def get(self, request, user_id):
         user = User.objects.get(pk=user_id)
@@ -177,6 +185,7 @@ class UserAddAccountsView(View):
         return redirect(f'/user_view/{user_id}/')
 
 
+# View for removing accounts
 def user_remove_accounts(request, user_id, account_id):
     if request.method == "GET":
         user = User.objects.get(pk=user_id)
@@ -239,16 +248,46 @@ class CompanyAddAccountView(View):
     def get(self, request, company_id):
         company = Company.objects.get(pk=company_id)
         banks = Bank.objects.all()
-        return render(request, 'company_add_account.html', {'company': company, 'banks': banks})
+        country_codes = []
+        for country in COUNTRY_CHOICE:
+            country_codes.append(country[1])
+        return render(request, 'company_add_account.html', {'banks': banks, 'company': company,
+                                                            'country_codes': country_codes})
 
     def post(self, request, company_id):
         company = Company.objects.get(pk=company_id)
-        iban_number = request.POST.get('iban')
+        banks = Bank.objects.all()
+        country_codes = []
+        for country in COUNTRY_CHOICE:
+            country_codes.append(country[1])
+        iban_country_code = request.POST.get('iban1')
+        iban_number = request.POST.get('iban2')
+        iban_length = len(iban_country_code) + len(iban_number)
+        full_iban = iban_country_code + iban_number
+        if not iban_number:
+            message = 'Please provide iban number.'
+            return render(request, 'company_add_account.html', {'banks': banks, 'company': company, 'message': message,
+                                                                'country_codes': country_codes})
+        elif iban_country_code in IBAN_COUNTRY_CODE_LENGTH and iban_length != IBAN_COUNTRY_CODE_LENGTH[iban_country_code]:
+            message = f'Provided iban number is incorrect. Make sure iban has {IBAN_COUNTRY_CODE_LENGTH[iban_country_code]} characters'
+            return render(request, 'company_add_account.html', {'banks': banks, 'company': company, 'message': message,
+                                                           'country_codes': country_codes})
+        else:
+            if Account.objects.filter(iban_number=full_iban):
+                message = 'Provided iban already exists in the database.'
+                return render(request, 'company_add_account.html', {'banks': banks, 'company': company, 'message': message,
+                                                                    'country_codes': country_codes})
+
         swift_code = request.POST.get('swift')
+        if len(swift_code) > 11:
+            message = 'Provided swift code is too long, swift can have maximum of 11 characters'
+            return render(request, 'company_add_account.html', {'banks': banks, 'company': company, 'message': message,
+                                                                'country_codes': country_codes})
         bank = request.POST.get('bank')
         bank = Bank.objects.get(name=bank)
-        account = Account.objects.create(iban_number=iban_number, swift_code=swift_code, bank=bank, company=company)
-        account.save()
+        # company = request.POST.get('company')
+        # company = Company.objects.get(name=company)
+        Account.objects.create(iban_number=full_iban, swift_code=swift_code, bank=bank, company=company)
         return redirect(f'/company_view/{company_id}/')
 
 

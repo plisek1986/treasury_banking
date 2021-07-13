@@ -1,5 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 70%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -8,8 +25,8 @@
     <p><a href="{% url 'company-list' %}">Go back</a></p>
     <a href="{% url 'add-account' company_id=company.id %}">Add accounts</a>
     <a href="{% url 'company-view-delete' company_id=company.id %}">Delete</a>
-    <p>Company name: {{company.name}}</p>
-    <p>Company country: {{company.country}}</p>
+    <p><strong>Company name:</strong> {{company.name}}</p>
+    <p><strong>Company country:</strong> {{company.country}}</p>
     <h2>Accounts:</h2>
     <table>
         <thead>
@@ -17,6 +34,7 @@
                 <th>Iban number</th>
                 <th>Swift code</th>
                 <th>Bank</th>
+                <th>Additional options</th>
             </tr>
         </thead>
             <tbody>

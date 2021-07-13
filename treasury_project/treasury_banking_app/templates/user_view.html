@@ -1,5 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 70%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
 <body>
 <p><a href="{% url 'users-list' %}">Go back</a></p>
     <a href="{% url 'user-edit' user_id=user.id %}">Edit User</a>
@@ -26,6 +43,7 @@
                {% if not user.can_delete_payment %} disabled {% else %} checked disabled {% endif %}>
     <br>
     <h3>Accounts</h3>
+
     <table>
         <thead>
             <tr>
@@ -33,6 +51,7 @@
                 <th>Bank</th>
                 <th>IBAN</th>
                 <th>Swift</th>
+                <th>Additional options</th>
             </tr>
         </thead>
         <tbody>
