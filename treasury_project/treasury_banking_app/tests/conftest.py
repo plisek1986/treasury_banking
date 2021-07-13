@@ -1,6 +1,6 @@
 import pytest
 from django.test import Client
-from treasury_banking_app.models import User, Company, Administrator
+from treasury_banking_app.models import User, Company, Administrator, Account, Bank
 
 
 @pytest.fixture
@@ -27,6 +27,8 @@ def company():
 @pytest.fixture
 def administrator():
     administrator = Administrator.objects.create(name='Michał', surname='Paluch',
-                                         login='Udfsr43', password='Password_3',
-                                         password_repeat='Password_3')
+                                                 login='Udfsr43', password='Password_3',
+                                                 password_repeat='Password_3')
     return administrator
+
+
