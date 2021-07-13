@@ -2,13 +2,30 @@
 {% block content %}
 <p><a href="{% url 'dashboard' %}">Go back</a></p>
 <p><a href="{% url 'admin-create' %}">Create new</a></p>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 70%;
+}
 
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
 <table>
     <thead>
         <tr>
             <th>Name</th>
             <th>Surname</th>
             <th>Login</th>
+            <th colspan="3">Additional options</th>
         </tr>
     </thead>
     <tbody>
@@ -17,7 +34,7 @@
             <td>{{admin.name}}</td>
             <td>{{admin.surname}}</td>
             <td>{{admin.login}}</td>
-            <td><a href="">Edit</a></td>
+            <td><a href="{% url 'admin-edit' admin_id=admin.id %}">Edit</a></td>
             <td><a href="{% url 'admin-password-reset' admin_id=admin.id %}">Password reset</a></td>
             <td><a href="{% url 'admin-delete' admin_id=admin.id %}">Delete</a></td>
         </tr>

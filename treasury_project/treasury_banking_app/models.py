@@ -61,7 +61,7 @@ class Company(models.Model):
 
 
 class Bank(models.Model):
-    name = models.CharField(max_length=255, unique=True, blank=False)
+    name = models.CharField(max_length=255, blank=False)
 
     def __str__(self):
         return self.name
@@ -69,6 +69,6 @@ class Bank(models.Model):
 
 class Account(models.Model):
     iban_number = models.CharField(max_length=64, unique=True, blank=False, null=False)
-    swift_code = models.CharField(max_length=11, blank=False, null=False)
+    swift_code = models.CharField(max_length=11, blank=False)
     bank = models.ForeignKey(Bank, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
