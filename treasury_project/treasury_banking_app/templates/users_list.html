@@ -1,5 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 70%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
 <p><a href="{% url 'dashboard' %}">Go back</a></p>
 <p><a href="{% url 'user-create' %}">New User</a></p>
             <table>
@@ -7,6 +24,7 @@
                 <tr>
                     <th>User full name</th>
                     <th>User internal ID</th>
+                    <th colspan="3">Additional options</th>
                 </tr>
                 </thead>
                 <tbody>
