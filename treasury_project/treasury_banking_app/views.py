@@ -100,7 +100,17 @@ class UserView(View):
     def get(self, request, user_id):
         user = User.objects.get(pk=user_id)
         accounts = user.account.all()
-        return render(request, 'user_view.html', {'user': user, 'accounts': accounts})
+        ctx = {'name': user.name,
+               'user_id': user.id,
+               'surname': user.surname,
+               'internal_id': user.internal_id,
+               'is_administrator': user.is_administrator,
+               'is_payment_creator': user.is_payment_creator,
+               'is_payment_approver': user.is_payment_approver,
+               'can_delete_payment': user.can_delete_payment,
+               'accounts': accounts,
+               }
+        return render(request, 'user_view.html', ctx)
 
 
 # View where admin can modify details related to the user, including adding or removing accounts
@@ -358,7 +368,7 @@ class AccountCreateView(View):
         if len(swift_code) > 11:
             message = 'Provided swift code is too long, swift can have maximum of 11 characters'
             return render(request, 'account_create.html', {'banks': banks, 'companies': companies, 'message': message,
-                                                            'country_codes': country_codes})
+                                                           'country_codes': country_codes})
         bank = request.POST.get('bank')
         bank = Bank.objects.get(name=bank)
         company = request.POST.get('company')

@@ -19,28 +19,28 @@ tr:nth-child(even) {
 </style>
 <body>
 <p><a href="{% url 'users-list' %}">Go back</a></p>
-    <a href="{% url 'user-edit' user_id=user.id %}">Edit User</a>
-    <a href="{% url 'user-view-delete' user_id=user.id %}">Delete user</a>
-    <a href="{% url 'user-add-accounts' user_id=user.id %}">Add accounts</a>
-    <p><strong>User name:</strong> {{user.name}}</p>
-    <p><strong>User Surname:</strong> {{user.surname}}</p>
-    <p><strong>Internal ID:</strong>{{user.internal_id}}</p>
+    <a href="{% url 'user-edit' user_id=user_id %}">Edit User</a>
+    <a href="{% url 'user-view-delete' user_id=user_id %}">Delete user</a>
+    <a href="{% url 'user-add-accounts' user_id=user_id %}">Add accounts</a>
+    <p><strong>User name:</strong> {{name}}</p>
+    <p><strong>User Surname:</strong> {{surname}}</p>
+    <p><strong>Internal ID:</strong>{{internal_id}}</p>
     <h3><strong>Access:</strong></h3>
     <label for="administrator">Administrator:</label>
         <input type="checkbox" name='administrator' id="administrator"
-               {% if not user.is_administrator %} disabled {% else %} disabled checked {% endif %}>
+               {% if not is_administrator %} disabled {% else %} disabled checked {% endif %}>
     <br>
     <label for="approver">Payment approver</label>
         <input type="checkbox" name='approver' id="approver"
-               {% if not user.is_payment_approver %} disabled {% else %} disabled checked {% endif %}>
+               {% if not is_payment_approver %} disabled {% else %} disabled checked {% endif %}>
     <br>
     <label for="creator">Payment creator:</label>
         <input type="checkbox" name='administrator' id="creator"
-               {% if not user.is_payment_creator %} disabled {% else %} disabled checked {% endif %}>
+               {% if not is_payment_creator %} disabled {% else %} disabled checked {% endif %}>
     <br>
     <label for="delete">Can delete payment</label>
         <input type="checkbox" name='delete' id="delete"
-               {% if not user.can_delete_payment %} disabled {% else %} checked disabled {% endif %}>
+               {% if not can_delete_payment %} disabled {% else %} checked disabled {% endif %}>
     <br>
     <h3>Accounts</h3>
 
