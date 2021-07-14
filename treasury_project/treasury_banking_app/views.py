@@ -3,6 +3,7 @@ from django.views import View
 import hashlib
 from treasury_banking_app.forms import UserCreateForm, BankAddForm, AdministratorCreateForm, LoginForm
 from treasury_banking_app.models import User, Account, Company, Bank, ACCESS_CHOICE, Administrator, COUNTRY_CHOICE
+
 # from django.contrib.auth import authenticate, login, logout
 
 
@@ -21,7 +22,7 @@ IBAN_COUNTRY_CODE_LENGTH = {
 }
 
 # variable utilized in the password creation / validation view
-special_characters = '!@#$%^&*()_+-={}[]|\:";<>?,./"' + "'"
+special_characters = '!@#$%^&*()_+-={}[]|:";<>?,./"' + "'"
 
 
 # 'France': 27,  # France
@@ -97,7 +98,7 @@ class UsersListView(View):
     """View lists all users having assigned privileges."""
 
     def get(self, request):
-        users = User.objects.all()
+        users = User.objects.all().order_by('surname')
         return render(request, 'users_list.html', {'users': users})
 
 
@@ -269,7 +270,7 @@ class CompanyListView(View):
     """View for enlisting all companies with additional options that can be performed on each company object."""
 
     def get(self, request):
-        companies = Company.objects.all()
+        companies = Company.objects.all().order_by('name')
         return render(request, 'company_list.html', {'companies': companies})
 
 
@@ -344,9 +345,10 @@ class CompanyAddAccountView(View):
             message = 'Please provide iban number.'
             return render(request, 'company_add_account.html', {'banks': banks, 'company': company, 'message': message,
                                                                 'country_codes': country_codes})
-        elif iban_country_code in IBAN_COUNTRY_CODE_LENGTH and iban_length != IBAN_COUNTRY_CODE_LENGTH[
-            iban_country_code]:
-            message = f'Provided iban number is incorrect. Make sure iban has {IBAN_COUNTRY_CODE_LENGTH[iban_country_code]} characters'
+        elif iban_country_code in IBAN_COUNTRY_CODE_LENGTH and iban_length != \
+                IBAN_COUNTRY_CODE_LENGTH[iban_country_code]:
+            message = f'Provided iban number is incorrect. Make sure iban has  \
+                      {IBAN_COUNTRY_CODE_LENGTH[iban_country_code]} characters'
             return render(request, 'company_add_account.html', {'banks': banks, 'company': company, 'message': message,
                                                                 'country_codes': country_codes})
         else:
@@ -433,9 +435,10 @@ class AccountCreateView(View):
             message = 'Please provide iban number.'
             return render(request, 'account_create.html', {'banks': banks, 'companies': companies, 'message': message,
                                                            'country_codes': country_codes})
-        elif iban_country_code in IBAN_COUNTRY_CODE_LENGTH and iban_length != IBAN_COUNTRY_CODE_LENGTH[
-            iban_country_code]:
-            message = f'Provided iban number is incorrect. Make sure iban has {IBAN_COUNTRY_CODE_LENGTH[iban_country_code]} characters'
+        elif iban_country_code in IBAN_COUNTRY_CODE_LENGTH and iban_length != \
+                IBAN_COUNTRY_CODE_LENGTH[iban_country_code]:
+            message = f'Provided iban number is incorrect. Make sure iban has  \
+                      {IBAN_COUNTRY_CODE_LENGTH[iban_country_code]} characters'
             return render(request, 'account_create.html', {'banks': banks, 'companies': companies, 'message': message,
                                                            'country_codes': country_codes})
         else:
@@ -550,7 +553,7 @@ class BankListView(View):
     """View for enlisting all banks available in the database."""
 
     def get(self, request):
-        banks = Bank.objects.all()
+        banks = Bank.objects.all().order_by('name')
         return render(request, 'banks_list.html', {'banks': banks})
 
 
@@ -619,6 +622,7 @@ class AccessTypesListView(View):
         access_types = []
         for access in ACCESS_CHOICE:
             access_types.append(access[1])
+            access_types = sorted(access_types)
         return render(request, 'access_types_list.html', {'access_types': access_types})
 
 
@@ -629,7 +633,7 @@ class AdministratorListView(View):
     """
 
     def get(self, request):
-        admins = Administrator.objects.all()
+        admins = Administrator.objects.all().order_by('name')
         return render(request, 'admin_list.html', {'admins': admins})
 
 
@@ -752,7 +756,7 @@ class AdministratorEditView(View):
         administrator = Administrator.objects.get(pk=admin_id)
         return render(request, 'admin_edit.html', {'administrator': administrator})
 
-    def get(self, request, admin_id):
+    def post(self, request, admin_id):
         administrator = Administrator.objects.get(pk=admin_id)
         surname = request.POST.get('surname')
         administrator.surname = surname

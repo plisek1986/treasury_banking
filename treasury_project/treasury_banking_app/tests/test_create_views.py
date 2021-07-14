@@ -1,5 +1,5 @@
 import pytest
-from treasury_banking_app.models import User, Company, Administrator, Account
+from treasury_banking_app.models import User, Company, Administrator, Bank, Account
 
 
 @pytest.mark.django_db
@@ -59,6 +59,33 @@ def test_administrator_create_view(client):
 @pytest.mark.django_db
 def test_administrator_model(administrator):
     assert Administrator.objects.get(surname='Paluch') == administrator
+
+
+@pytest.mark.django_db
+def test_bank_model(bank):
+    assert Bank.objects.get(name='Random Bank') == bank
+
+
+@pytest.mark.django_db
+def test_account_model(account):
+    assert Account.objects.get(iban_number='TEEdddddddfs')
+
+
+# @pytest.mark.django_db
+# def test_account_crate_view(client):
+#     bank = Bank.objects.create(name='R-Bank')
+#     company = Company.objects.create(name='Tre Belarus', country='Belarus')
+#     swift_code = '4rrerewr'
+#     iban_number = '3424324rsefsdf'
+#     iban_country_code = 'AT'
+#     # iban_length = len(iban_country_code) + len(iban_number)
+#     full_iban = iban_country_code + iban_number
+#     response = client.post('/account_create/', {'bank': bank, 'company': company,
+#                            'swift_code': swift_code, 'iban_code': full_iban})
+#
+#     assert response.status_code == 302
+#     assert Account.objects.get(iban_code=iban_number)
+
 
 
 
