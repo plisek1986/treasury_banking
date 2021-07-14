@@ -32,3 +32,16 @@ def administrator():
     return administrator
 
 
+@pytest.fixture
+def bank():
+    bank = Bank.objects.create(name='Random Bank')
+    return bank
+
+
+@pytest.fixture
+def account():
+    bank_test = Bank.objects.create(name='R-Bank')
+    company_test = Company.objects.create(name='Tre Belarus', country='Belarus')
+    account = Account.objects.create(iban_number='TEEdddddddfs', swift_code='tertrefdsf',
+                                     bank=bank_test, company=company_test)
+    return account
