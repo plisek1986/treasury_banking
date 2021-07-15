@@ -4,9 +4,26 @@
 <head>
     <meta charset="UTF-8">
 </head>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 70%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
 <body>
     <img src="{% static 'treasurymanagement.png' %}"/>
-    <h1>Treasury Banking Access Management Platform</h1>
+    <h1 style="color:black">Treasury Banking Access Management Platform</h1>
     {% block content %}
     {% endblock %}
 </body>

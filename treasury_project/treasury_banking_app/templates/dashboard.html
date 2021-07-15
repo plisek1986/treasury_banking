@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-
-<p>Hello {{logged_admin.name}} {{logged_admin.surname}}!</p>
-    <ul>
+<head>
+  <link rel="stylesheet" href="styles.css">
+</head>
+    <ul class="menu">
         <li><a href="{% url 'users-list' %}">Users</a></li>
         <li><a href="{% url 'company-list' %}">Companies</a></li>
         <li><a href="{% url 'accounts-list' %}">Accounts</a></li>

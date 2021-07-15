@@ -1,9 +1,9 @@
 import pytest
-from treasury_banking_app.models import User
 
 
 @pytest.mark.django_db
 def test_user_view(client, user):
+    """Test to view user from information passed in the context"""
     id_ = user.pk
     response = client.get(f'/user_view/{id_}/')
     assert response.status_code == 200

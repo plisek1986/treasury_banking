@@ -4,6 +4,8 @@ from treasury_banking_app.models import User, Company, Administrator, Bank, Acco
 
 @pytest.mark.django_db
 def test_user_create_view(client):
+    """Test to create a user from information passed in the user create form"""
+
     name = 'Katarzyna'
     surname = 'Solska'
     internal_id = 'PKY8978'
@@ -24,11 +26,15 @@ def test_user_create_view(client):
 
 @pytest.mark.django_db
 def test_user_model(user):
+    """Test to create a user from information passed in user model"""
+
     assert User.objects.get(name='Janek') == user
 
 
 @pytest.mark.django_db
 def test_company_create_view(client):
+    """Test to create a company from information passed in the company create form"""
+
     name = 'Tre Bulgaria'
     country = 'Bulgaria'
     response = client.post('/company_create/', {'name': name, 'country': country})
@@ -39,11 +45,15 @@ def test_company_create_view(client):
 
 @pytest.mark.django_db
 def test_company_model(company):
+    """Test to create a company from information passed in company model"""
+
     assert Company.objects.get(name='Tre G.M.B.H.') == company
 
 
 @pytest.mark.django_db
 def test_administrator_create_view(client):
+    """Test to create an administrator from information passed in the administrator create form"""
+
     name = 'Jacek'
     surname = 'Kruchy'
     login = 'PLIjds7'
@@ -58,34 +68,20 @@ def test_administrator_create_view(client):
 
 @pytest.mark.django_db
 def test_administrator_model(administrator):
+    """Test to create an administrator from information passed in administrator model"""
+
     assert Administrator.objects.get(surname='Paluch') == administrator
 
 
 @pytest.mark.django_db
 def test_bank_model(bank):
+    """Test to create a bank from information passed in bank model"""
+
     assert Bank.objects.get(name='Random Bank') == bank
 
 
 @pytest.mark.django_db
 def test_account_model(account):
+    """Test to create an account from information passed in account model"""
+
     assert Account.objects.get(iban_number='TEEdddddddfs')
-
-
-# @pytest.mark.django_db
-# def test_account_crate_view(client):
-#     bank = Bank.objects.create(name='R-Bank')
-#     company = Company.objects.create(name='Tre Belarus', country='Belarus')
-#     swift_code = '4rrerewr'
-#     iban_number = '3424324rsefsdf'
-#     iban_country_code = 'AT'
-#     # iban_length = len(iban_country_code) + len(iban_number)
-#     full_iban = iban_country_code + iban_number
-#     response = client.post('/account_create/', {'bank': bank, 'company': company,
-#                            'swift_code': swift_code, 'iban_code': full_iban})
-#
-#     assert response.status_code == 302
-#     assert Account.objects.get(iban_code=iban_number)
-
-
-
-
