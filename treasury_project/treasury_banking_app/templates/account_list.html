@@ -3,6 +3,11 @@
 <p><a href="{% url 'dashboard' %}">Go back</a></p>
 <a href="{% url 'account-create' %}">Create account</a>
 <style>
+    body {
+background-color: #DBF9FC;
+        color: white
+}
+
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
@@ -15,11 +20,11 @@ td, th {
   padding: 8px;
 }
 
-tr:nth-child(even) {
-  background-color: #dddddd;
-}
+/*tr:nth-child(even) {*/
+/*  background-color: #dddddd;*/
+/*}*/
 </style>
-<table>
+<table style="background-color:#316998">
     <thead>
         <tr>
             <th>Company</th>

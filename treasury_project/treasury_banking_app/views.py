@@ -19,6 +19,26 @@ IBAN_COUNTRY_CODE_LENGTH = {
     'EE': 20,  # Estonia
     'ES': 24,  # Spain
     'FI': 18,  # Finland
+    'France': 27,  # France
+    'United Kingdom': 22,  # United Kingdom
+    'GR': 27,  # Greece
+    'HR': 21,  # Croatia
+    'HU': 28,  # Hungary
+    'IE': 22,  # Ireland
+    'IS': 26,  # Iceland
+    'IT': 27,  # Italy
+    'KZ': 20,  # Kazakhstan
+    'LT': 20,  # Lithuania
+    'LV': 21,  # Latvia
+    'NL': 18,  # Netherlands
+    'NO': 15,  # Norway
+    'PL': 28,  # Poland
+    'PT': 25,  # Portugal
+    'RO': 24,  # Romania
+    'SE': 24,  # Sweden
+    'SI': 19,  # Slovenia
+    'SK': 24,  # Slovakia
+    'TR': 26,  # Turkey
 }
 
 # variable utilized in the password creation / validation view
@@ -223,7 +243,6 @@ class UserAddAccountsView(View):
         return redirect(f'/user_view/{user_id}/')
 
 
-#
 def user_remove_accounts(request, user_id, account_id):
     """
     Function for removing accounts that user has access to. The accounts are removed from the user profile only.
@@ -761,7 +780,7 @@ class AdministratorEditView(View):
         surname = request.POST.get('surname')
         administrator.surname = surname
         administrator.save()
-        return redirect('admin-list')
+        return redirect('admins-list')
 
 
 class LoginView(View):

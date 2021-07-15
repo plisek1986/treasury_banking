@@ -22,7 +22,8 @@ tr:nth-child(even) {
             <table>
                 <thead>
                 <tr>
-                    <th>User full name</th>
+                    <th>Name</th>
+                    <th>Surname</th>
                     <th>User internal ID</th>
                     <th colspan="3">Additional options</th>
                 </tr>
@@ -30,7 +31,8 @@ tr:nth-child(even) {
                 <tbody>
                 {% for user in users %}
                 <tr>
-                    <td>{{user.surname}}, {{user.name}}</td>
+                    <td>{{user.name}}</td>
+                    <td>{{user.surname}}</td>
                     <td>{{user.internal_id}}</td>
                     <td><a href="/user_view/{{user.id}}/">View</a></td>
                     <td><a href="/user_edit/{{user.id}}/">Edit</a></td>
