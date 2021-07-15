@@ -2,7 +2,7 @@
 {% block content %}
 <form action="" method="POST">
     {% csrf_token %}
-    <h3>Are you sure you want to delete user {{company.name}}?</h3>
+    <h3>Are you sure you want to delete company {{company.name}}?</h3>
     <button type="submit">Yes</button><a href="{% url 'company-view' company_id=company.id %}">Cancel</a>
 </form>
 {% endblock %}

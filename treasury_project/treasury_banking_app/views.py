@@ -4,8 +4,6 @@ import hashlib
 from treasury_banking_app.forms import UserCreateForm, BankAddForm, AdministratorCreateForm, LoginForm
 from treasury_banking_app.models import User, Account, Company, Bank, ACCESS_CHOICE, Administrator, COUNTRY_CHOICE
 
-# from django.contrib.auth import authenticate, login, logout
-
 
 # dictionary utilized in the iban creation view
 IBAN_COUNTRY_CODE_LENGTH = {
@@ -19,8 +17,8 @@ IBAN_COUNTRY_CODE_LENGTH = {
     'EE': 20,  # Estonia
     'ES': 24,  # Spain
     'FI': 18,  # Finland
-    'France': 27,  # France
-    'United Kingdom': 22,  # United Kingdom
+    'FR': 27,  # France
+    'GB': 22,  # United Kingdom
     'GR': 27,  # Greece
     'HR': 21,  # Croatia
     'HU': 28,  # Hungary
@@ -41,31 +39,9 @@ IBAN_COUNTRY_CODE_LENGTH = {
     'TR': 26,  # Turkey
 }
 
+
 # variable utilized in the password creation / validation view
 special_characters = '!@#$%^&*()_+-={}[]|:";<>?,./"' + "'"
-
-
-# 'France': 27,  # France
-# 'United Kingdom': 22,  # United Kingdom + Guernsey, Isle of Man, Jersey
-# 'GR': 27,  # Greece
-# 'HR': 21,  # Croatia
-# 'HU': 28,  # Hungary
-# 'IE': 22,  # Ireland
-# 'IS': 26,  # Iceland
-# 'IT': 27,  # Italy
-# 'KZ': 20,  # Kazakhstan
-# 'LT': 20,  # Lithuania
-# 'LV': 21,  # Latvia
-# 'NL': 18,  # Netherlands
-# 'NO': 15,  # Norway
-# 'PL': 28,  # Poland
-# 'PT': 25,  # Portugal
-# 'RO': 24,  # Romania
-# 'SE': 24,  # Sweden
-# 'SI': 19,  # Slovenia
-# 'SK': 24,  # Slovakia
-# 'TR': 26,  # Turkey
-# ]
 
 
 class MainPageView(View):
@@ -270,6 +246,7 @@ class CompanyCreateView(View):
         countries = []
         for country in COUNTRY_CHOICE:
             countries.append(country[0])
+            countries.sort()
         return render(request, 'company_create.html', {'countries': countries})
 
     def post(self, request):
@@ -347,6 +324,7 @@ class CompanyAddAccountView(View):
         country_codes = []
         for country in COUNTRY_CHOICE:
             country_codes.append(country[1])
+            country_codes.sort()
         return render(request, 'company_add_account.html', {'banks': banks, 'company': company,
                                                             'country_codes': country_codes})
 
