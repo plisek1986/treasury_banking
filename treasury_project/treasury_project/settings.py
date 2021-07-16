@@ -105,9 +105,11 @@ STATIC_URL = '/static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'dashboard'
+# LOGIN_URL = '/login/'
+# LOGIN_REDIRECT_URL = 'dashboard'
 
 try:
     from treasury_project.local_settings import DATABASES
