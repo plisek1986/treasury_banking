@@ -61,7 +61,7 @@ tr:nth-child(even) {
                 <td>{{account.bank}}</td>
                 <td>{{account.iban_number}}</td>
                 <td>{{account.swift_code}}</td>
-                <td><a href="{% url 'user-remove-accounts' user_id=user.id account_id=account.id%}">Remove</a></td>
+                <td><a href="{% url 'user-remove-accounts' user_id=user_id account_id=account.id%}">Remove</a></td>
             </tr>
             {% endfor %}
         </tbody>

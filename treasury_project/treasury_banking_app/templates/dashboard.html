@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-<head>
-  <link rel="stylesheet" href="styles.css">
-</head>
+{{response}}
+<!--<head>-->
+<!--  <link rel="stylesheet" href="styles.css">-->
+<!--</head>-->
     <ul class="menu">
         <li><a href="{% url 'users-list' %}">Users</a></li>
         <li><a href="{% url 'company-list' %}">Companies</a></li>

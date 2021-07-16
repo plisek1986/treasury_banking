@@ -5,7 +5,7 @@ from django.views import View
 import hashlib
 from treasury_banking_app.forms import UserCreateForm, BankAddForm, AdministratorCreateForm, LoginForm
 from treasury_banking_app.models import User, Account, Company, Bank, ACCESS_CHOICE, Administrator, COUNTRY_CHOICE
-
+from django.shortcuts import Http404, HttpResponse
 
 # dictionary utilized in the iban creation view
 IBAN_COUNTRY_CODE_LENGTH = {
@@ -41,7 +41,6 @@ IBAN_COUNTRY_CODE_LENGTH = {
     'TR': 26,  # Turkey
 }
 
-
 # variable utilized in the password creation / validation view
 special_characters = '!@#$%^&*()_+-={}[]|:";<>?,./"' + "'"
 
@@ -53,15 +52,20 @@ class MainPageView(View):
         return render(request, 'main_page.html')
 
 
-@login_required
 def dashboard_view(request, *args, **kwargs):
+    """Returns dashboard with options"""
+
     return render(request, 'dashboard.html')
 
 
-class UserCreateView(LoginRequiredMixin, View):
+class UserCreateView(View):
     """View lists user creation fields and includes necessary validations."""
 
     def get(self, request, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         form = UserCreateForm()
         return render(request, 'user_create.html', {'form': form})
 
@@ -94,6 +98,10 @@ class UsersListView(View):
     """View lists all users having assigned privileges."""
 
     def get(self, request, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         users = User.objects.all().order_by('surname')
         return render(request, 'users_list.html', {'users': users})
 
@@ -102,6 +110,10 @@ class UserView(View):
     """View displays all details of the user including accounts to which user has access."""
 
     def get(self, request, user_id, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         user = User.objects.get(pk=user_id)
         accounts = user.account.all()
         ctx = {'name': user.name,
@@ -124,6 +136,10 @@ class UserEditView(View):
     """
 
     def get(self, request, user_id, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         user = User.objects.get(pk=user_id)
         accounts = Account.objects.all()
         return render(request, 'user_edit.html', {'user': user, 'accounts': accounts})
@@ -171,6 +187,10 @@ def user_delete(request, user_id, *args, **kwargs):
     :return: User deleted and administrator redirected to the user list
     """
 
+    try:
+        request.session['admin_id']
+    except KeyError:
+        return HttpResponse('You are not authorized')
     user = User.objects.get(pk=user_id)
     if request.method == 'POST':
         user.delete()
@@ -186,6 +206,10 @@ def user_view_delete(request, user_id, *args, **kwargs):
     :return: User deleted and administrator redirected to the user list
     """
 
+    try:
+        request.session['admin_id']
+    except KeyError:
+        return HttpResponse('You are not authorized')
     user = User.objects.get(pk=user_id)
     if request.method == 'POST':
         user.delete()
@@ -200,6 +224,10 @@ class UserAddAccountsView(View):
     """
 
     def get(self, request, user_id, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         user = User.objects.get(pk=user_id)
         accounts = Account.objects.all()
         user_accounts = user.account.all()
@@ -227,6 +255,10 @@ def user_remove_accounts(request, user_id, account_id, *args, **kwargs):
     :param account_id: account that is to be removed from the user's profile
     :return: user view
     """
+    try:
+        request.session['admin_id']
+    except KeyError:
+        return HttpResponse('You are not authorized')
     if request.method == "GET":
         user = User.objects.get(pk=user_id)
         account = Account.objects.get(pk=account_id)
@@ -243,6 +275,10 @@ class CompanyCreateView(View):
     """
 
     def get(self, request, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         countries = []
         for country in COUNTRY_CHOICE:
             countries.append(country[0])
@@ -266,6 +302,10 @@ class CompanyListView(View):
     """View for enlisting all companies with additional options that can be performed on each company object."""
 
     def get(self, request, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         companies = Company.objects.all().order_by('name')
         return render(request, 'company_list.html', {'companies': companies})
 
@@ -277,6 +317,10 @@ class CompanyView(View):
     """
 
     def get(self, request, company_id, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         company = Company.objects.get(pk=company_id)
         accounts = company.account_set.all()
         return render(request, 'company_view.html', {'company': company, 'accounts': accounts})
@@ -290,6 +334,10 @@ def company_delete(request, company_id, *args, **kwargs):
     :return: redirects administrator to the company list view
     """
 
+    try:
+        request.session['admin_id']
+    except KeyError:
+        return HttpResponse('You are not authorized')
     company = Company.objects.get(pk=company_id)
     if request.method == 'POST':
         company.delete()
@@ -305,6 +353,10 @@ def company_view_delete(request, company_id, *args, **kwargs):
     :return: redirects administrator to the company list view
     """
 
+    try:
+        request.session['admin_id']
+    except KeyError:
+        return HttpResponse('You are not authorized')
     company = Company.objects.get(pk=company_id)
     if request.method == 'POST':
         company.delete()
@@ -319,6 +371,10 @@ class CompanyAddAccountView(View):
     """
 
     def get(self, request, company_id, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         company = Company.objects.get(pk=company_id)
         banks = Bank.objects.all()
         country_codes = []
@@ -375,6 +431,10 @@ def company_delete_accounts(request, account_id, company_id, *args, **kwargs):
     :return: company view
     """
 
+    try:
+        request.session['admin_id']
+    except KeyError:
+        return HttpResponse('You are not authorized')
     company = Company.objects.get(pk=company_id)
     account = Account.objects.get(pk=account_id)
     if request.method == 'POST':
@@ -387,13 +447,17 @@ class CompanyEditView(View):
     """View for editing company where the administrator can modify name and the country of origin of the company."""
 
     def get(self, request, company_id, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         company = Company.objects.get(pk=company_id)
         return render(request, 'company_edit.html', {'company': company})
 
     def post(self, request, company_id, *args, **kwargs):
         company = Company.objects.get(pk=company_id)
         name = request.POST.get('name')
-        if Company.objects.filter(name=name):
+        if Company.objects.filter(name=name) and name != company.name:
             message = 'Company with this name already exists in database.'
             return render(request, 'company_edit.html', {'company': company, 'message': message})
         country = request.POST.get('country')
@@ -410,6 +474,10 @@ class AccountCreateView(View):
     """
 
     def get(self, request, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         banks = Bank.objects.all()
         companies = Company.objects.all()
         country_codes = []
@@ -463,6 +531,10 @@ class AccountListView(View):
     """View for enlisting all accounts in the database."""
 
     def get(self, request, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         accounts = Account.objects.all().order_by('-company')
         companies = Company.objects.all()
         return render(request, 'account_list.html', {'accounts': accounts, 'companies': companies})
@@ -476,6 +548,10 @@ def account_delete(request, account_id, *args, **kwargs):
     :return: administrator is redirected to the account list view
     """
 
+    try:
+        request.session['admin_id']
+    except KeyError:
+        return HttpResponse('You are not authorized')
     account = Account.objects.get(pk=account_id)
     if request.method == 'POST':
         account.delete()
@@ -487,6 +563,10 @@ class AccountEditView(View):
     """View for editing account details. Some attributes are not available for the administrator to modify."""
 
     def get(self, request, account_id, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         account = Account.objects.get(pk=account_id)
         return render(request, 'account_edit.html', {'account': account})
 
@@ -517,6 +597,10 @@ def bank_account_delete(request, account_id, bank_id, *args, **kwargs):
     :return: administrator is redirected to the account list view
     """
 
+    try:
+        request.session['admin_id']
+    except KeyError:
+        return HttpResponse('You are not authorized')
     account = Account.objects.get(pk=account_id)
     bank = Bank.objects.get(pk=bank_id)
     if request.method == 'POST':
@@ -532,6 +616,10 @@ class BankAddView(View):
     """
 
     def get(self, request, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         form = BankAddForm()
         return render(request, 'bank_add.html', {'form': form})
 
@@ -550,6 +638,10 @@ class BankListView(View):
     """View for enlisting all banks available in the database."""
 
     def get(self, request, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         banks = Bank.objects.all().order_by('name')
         return render(request, 'banks_list.html', {'banks': banks})
 
@@ -558,6 +650,10 @@ class BankViewView(View):
     """View for displaying all details of a bank, incl. it's accounts."""
 
     def get(self, request, bank_id, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         bank = Bank.objects.get(pk=bank_id)
         accounts = bank.account_set.all()
         return render(request, 'bank_view.html', {'bank': bank, 'accounts': accounts})
@@ -571,6 +667,10 @@ def bank_delete(request, bank_id, *args, **kwargs):
     :return: administrator is redirected to the list of banks
     """
 
+    try:
+        request.session['admin_id']
+    except KeyError:
+        return HttpResponse('You are not authorized')
     bank = Bank.objects.get(pk=bank_id)
     if request.method == 'POST':
         bank.delete()
@@ -587,6 +687,10 @@ def bank_view_delete(request, bank_id, *args, **kwargs):
     :return: administrator is redirected to the list of banks
     """
 
+    try:
+        request.session['admin_id']
+    except KeyError:
+        return HttpResponse('You are not authorized')
     bank = Bank.objects.get(pk=bank_id)
     if request.method == 'POST':
         bank.delete()
@@ -598,6 +702,10 @@ class BankEditView(View):
     """View for editing bank's details. Validation of the existence of the bank in the database takes place. """
 
     def get(self, request, bank_id, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         bank = Bank.objects.get(pk=bank_id)
         return render(request, 'bank_edit.html', {'bank': bank})
 
@@ -616,6 +724,10 @@ class AccessTypesListView(View):
     """View for enlisting all access rights. No additional options are available in this view."""
 
     def get(self, request, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         access_types = []
         for access in ACCESS_CHOICE:
             access_types.append(access[1])
@@ -630,6 +742,10 @@ class AdministratorListView(View):
     """
 
     def get(self, request, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         admins = Administrator.objects.all().order_by('name')
         return render(request, 'admin_list.html', {'admins': admins})
 
@@ -647,6 +763,10 @@ class AdministratorCreateView(View):
     """View for creating a new administrator where additional validations for login and password take place."""
 
     def get(self, request, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         form = AdministratorCreateForm()
         return render(request, 'admin_create.html', {'form': form})
 
@@ -691,6 +811,10 @@ class AdministratorPasswordReset(View):
     """View for resetting password where validation and hashing takes place."""
 
     def get(self, request, admin_id, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         administrator = Administrator.objects.get(pk=admin_id)
         return render(request, 'admin_password_reset.html', {'administrator': administrator})
 
@@ -739,6 +863,10 @@ def administrator_delete(request, admin_id, *args, **kwargs):
     :return: administrator is redirected to the administrator list view
     """
 
+    try:
+        request.session['admin_id']
+    except KeyError:
+        return HttpResponse('You are not authorized')
     admin = Administrator.objects.get(pk=admin_id)
     if request.method == 'POST':
         admin.delete()
@@ -750,6 +878,10 @@ class AdministratorEditView(View):
     """View for editing administrator's details. Only surname can be modified."""
 
     def get(self, request, admin_id, *args, **kwargs):
+        try:
+            request.session['admin_id']
+        except KeyError:
+            return HttpResponse('You are not authorized')
         administrator = Administrator.objects.get(pk=admin_id)
         return render(request, 'admin_edit.html', {'administrator': administrator})
 
@@ -765,23 +897,57 @@ class LoginView(View):
     """View for administrators to provide their login credentials and log into the platform."""
 
     def get(self, request, *args, **kwargs):
-        form = LoginForm()
-        return render(request, 'login.html', {'form': form})
+        return render(request, 'logg.html')
 
     def post(self, request, *args, **kwargs):
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            login = form.cleaned_data['login']
-            password = form.cleaned_data['password']
-            password = hashlib.md5(password.encode('UTF-8'))
-            password = password.hexdigest()
-            administrator = Administrator.objects.filter(login=login, password=password)
-            if not administrator:
-                message = 'Authentication failed. Please try again.'
-                return render(request, 'login.html', {'form': form, 'message': message})
-            else:
-                logged_admin = Administrator.objects.get(login=login)
-                return render(request, 'dashboard.html', {'logged_admin': logged_admin})
+        password = request.POST['password']
+        password = hashlib.md5(password.encode('UTF-8'))
+        password = password.hexdigest()
+        admin = Administrator.objects.filter(login=request.POST['login'], password=password)
+        if not admin:
+            message = 'Please try again'
+            return render(request, 'logg.html', {'message': message})
+        else:
+            admin = Administrator.objects.get(password=password)
+            request.session['admin_id'] = admin.id
+            response = f'Hello {admin.name}!'
+            return render(request, 'dashboard.html', {'response': response})
+
+
+# def login(request):
+#     if request.method != 'POST':
+#         raise Http404('Only POSTs are allowed')
+#     try:
+#         admin = Administrator.objects.get(login=request.POST['login'])
+#         if admin.password == request.POST['password']:
+#             request.session['admin_id'] = admin.id
+#             return redirect('dashboard')
+#     except Administrator.DoesNotExist:
+#         return HttpResponse("Your username and password didn't match.")
+
+
+#
+# class LoginView(View):
+#     """View for administrators to provide their login credentials and log into the platform."""
+#
+#     def get(self, request, *args, **kwargs):
+#         form = LoginForm()
+#         return render(request, 'login.html', {'form': form})
+#
+#     def post(self, request, *args, **kwargs):
+#         form = LoginForm(request.POST)
+#         if form.is_valid():
+#             login = form.cleaned_data['login']
+#             password = form.cleaned_data['password']
+#             password = hashlib.md5(password.encode('UTF-8'))
+#             password = password.hexdigest()
+#             administrator = Administrator.objects.filter(login=login, password=password)
+#             if not administrator:
+#                 message = 'Authentication failed. Please try again.'
+#                 return render(request, 'login.html', {'form': form, 'message': message})
+#             else:
+#                 logged_admin = Administrator.objects.get(login=login)
+#                 return render(request, 'dashboard.html', {'logged_admin': logged_admin})
 
 
 def log_out(request, *args, **kwargs):
@@ -790,6 +956,8 @@ def log_out(request, *args, **kwargs):
     :param request: used by Django to pass state through the system
     :return: administrator is redirected to the main page
     """
+
     if request.method == 'POST':
+        del request.session['admin_id']
         return redirect('main')
     return render(request, 'log_out.html')
