@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
 import hashlib
@@ -51,21 +53,19 @@ class MainPageView(View):
         return render(request, 'main_page.html')
 
 
-class DashboardView(View):
-    """View lists main functionalities of the platform."""
-
-    def get(self, request):
-        return render(request, 'dashboard.html')
+@login_required
+def dashboard_view(request, *args, **kwargs):
+    return render(request, 'dashboard.html')
 
 
-class UserCreateView(View):
+class UserCreateView(LoginRequiredMixin, View):
     """View lists user creation fields and includes necessary validations."""
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         form = UserCreateForm()
         return render(request, 'user_create.html', {'form': form})
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         form = UserCreateForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
@@ -93,7 +93,7 @@ class UserCreateView(View):
 class UsersListView(View):
     """View lists all users having assigned privileges."""
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         users = User.objects.all().order_by('surname')
         return render(request, 'users_list.html', {'users': users})
 
@@ -101,7 +101,7 @@ class UsersListView(View):
 class UserView(View):
     """View displays all details of the user including accounts to which user has access."""
 
-    def get(self, request, user_id):
+    def get(self, request, user_id, *args, **kwargs):
         user = User.objects.get(pk=user_id)
         accounts = user.account.all()
         ctx = {'name': user.name,
@@ -123,12 +123,12 @@ class UserEditView(View):
     and access rights.
     """
 
-    def get(self, request, user_id):
+    def get(self, request, user_id, *args, **kwargs):
         user = User.objects.get(pk=user_id)
         accounts = Account.objects.all()
         return render(request, 'user_edit.html', {'user': user, 'accounts': accounts})
 
-    def post(self, request, user_id):
+    def post(self, request, user_id, *args, **kwargs):
         user = User.objects.get(pk=user_id)
         surname = request.POST.get('user_surname')
         is_administrator = request.POST.get('administrator')
@@ -163,7 +163,7 @@ class UserEditView(View):
         return redirect(f'/user_view/{user_id}/')
 
 
-def user_delete(request, user_id):
+def user_delete(request, user_id, *args, **kwargs):
     """
     Function for deleting user with confirming intention to remove the user.
     :param request: used by Django to pass state through the system
@@ -178,7 +178,7 @@ def user_delete(request, user_id):
     return render(request, 'user_delete.html', {'user': user})
 
 
-def user_view_delete(request, user_id):
+def user_view_delete(request, user_id, *args, **kwargs):
     """
     Function for deleting user with confirming intention to remove the user - view available inside the user view
     :param request: used by Django to pass state through the system
@@ -199,7 +199,7 @@ class UserAddAccountsView(View):
     are enlisted in this view.
     """
 
-    def get(self, request, user_id):
+    def get(self, request, user_id, *args, **kwargs):
         user = User.objects.get(pk=user_id)
         accounts = Account.objects.all()
         user_accounts = user.account.all()
@@ -209,7 +209,7 @@ class UserAddAccountsView(View):
                 available_accounts.append(account)
         return render(request, 'user_add_accounts.html', {'user': user, 'available_accounts': available_accounts})
 
-    def post(self, request, user_id):
+    def post(self, request, user_id, *args, **kwargs):
         user = User.objects.get(pk=user_id)
         accounts = request.POST.getlist('accounts')
         for account in accounts:
@@ -219,7 +219,7 @@ class UserAddAccountsView(View):
         return redirect(f'/user_view/{user_id}/')
 
 
-def user_remove_accounts(request, user_id, account_id):
+def user_remove_accounts(request, user_id, account_id, *args, **kwargs):
     """
     Function for removing accounts that user has access to. The accounts are removed from the user profile only.
     :param request: used by Django to pass state through the system
@@ -242,14 +242,14 @@ class CompanyCreateView(View):
     takes place in this view.
     """
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         countries = []
         for country in COUNTRY_CHOICE:
             countries.append(country[0])
             countries.sort()
         return render(request, 'company_create.html', {'countries': countries})
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         name = request.POST.get('name')
         country = request.POST.get('country')
         countries = []
@@ -265,7 +265,7 @@ class CompanyCreateView(View):
 class CompanyListView(View):
     """View for enlisting all companies with additional options that can be performed on each company object."""
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         companies = Company.objects.all().order_by('name')
         return render(request, 'company_list.html', {'companies': companies})
 
@@ -276,13 +276,13 @@ class CompanyView(View):
     can perform on the company object.
     """
 
-    def get(self, request, company_id):
+    def get(self, request, company_id, *args, **kwargs):
         company = Company.objects.get(pk=company_id)
         accounts = company.account_set.all()
         return render(request, 'company_view.html', {'company': company, 'accounts': accounts})
 
 
-def company_delete(request, company_id):
+def company_delete(request, company_id, *args, **kwargs):
     """
     Function for deleting a company object from the database.
     :param request: used by Django to pass state through the system
@@ -297,7 +297,7 @@ def company_delete(request, company_id):
     return render(request, 'company_delete.html', {'company': company})
 
 
-def company_view_delete(request, company_id):
+def company_view_delete(request, company_id, *args, **kwargs):
     """
     Function for deleting a company object from the database - view available from the company view level.
     :param request: used by Django to pass state through the system
@@ -318,7 +318,7 @@ class CompanyAddAccountView(View):
     Additional validations for iban number are defined in this view.
     """
 
-    def get(self, request, company_id):
+    def get(self, request, company_id, *args, **kwargs):
         company = Company.objects.get(pk=company_id)
         banks = Bank.objects.all()
         country_codes = []
@@ -328,7 +328,7 @@ class CompanyAddAccountView(View):
         return render(request, 'company_add_account.html', {'banks': banks, 'company': company,
                                                             'country_codes': country_codes})
 
-    def post(self, request, company_id):
+    def post(self, request, company_id, *args, **kwargs):
         company = Company.objects.get(pk=company_id)
         banks = Bank.objects.all()
         country_codes = []
@@ -366,7 +366,7 @@ class CompanyAddAccountView(View):
         return redirect(f'/company_view/{company_id}/')
 
 
-def company_delete_accounts(request, account_id, company_id):
+def company_delete_accounts(request, account_id, company_id, *args, **kwargs):
     """
     Function for deleting accounts from the company's account list. Account is permanently deleted from the database.
     :param request: used by Django to pass state through the system
@@ -386,11 +386,11 @@ def company_delete_accounts(request, account_id, company_id):
 class CompanyEditView(View):
     """View for editing company where the administrator can modify name and the country of origin of the company."""
 
-    def get(self, request, company_id):
+    def get(self, request, company_id, *args, **kwargs):
         company = Company.objects.get(pk=company_id)
         return render(request, 'company_edit.html', {'company': company})
 
-    def post(self, request, company_id):
+    def post(self, request, company_id, *args, **kwargs):
         company = Company.objects.get(pk=company_id)
         name = request.POST.get('name')
         if Company.objects.filter(name=name):
@@ -409,7 +409,7 @@ class AccountCreateView(View):
     Additional validations of iban number take place in this view.
     """
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         banks = Bank.objects.all()
         companies = Company.objects.all()
         country_codes = []
@@ -418,7 +418,7 @@ class AccountCreateView(View):
         return render(request, 'account_create.html', {'banks': banks, 'companies': companies,
                                                        'country_codes': country_codes})
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         banks = Bank.objects.all()
         companies = Company.objects.all()
         country_codes = []
@@ -462,13 +462,13 @@ class AccountCreateView(View):
 class AccountListView(View):
     """View for enlisting all accounts in the database."""
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         accounts = Account.objects.all().order_by('-company')
         companies = Company.objects.all()
         return render(request, 'account_list.html', {'accounts': accounts, 'companies': companies})
 
 
-def account_delete(request, account_id):
+def account_delete(request, account_id, *args, **kwargs):
     """
     Function for deleting an account from the database.
     :param request: used by Django to pass state through the system
@@ -486,11 +486,11 @@ def account_delete(request, account_id):
 class AccountEditView(View):
     """View for editing account details. Some attributes are not available for the administrator to modify."""
 
-    def get(self, request, account_id):
+    def get(self, request, account_id, *args, **kwargs):
         account = Account.objects.get(pk=account_id)
         return render(request, 'account_edit.html', {'account': account})
 
-    def post(self, request, account_id):
+    def post(self, request, account_id, *args, **kwargs):
         account = Account.objects.get(pk=account_id)
         iban_number = request.POST.get('iban')
         if not iban_number:
@@ -508,7 +508,7 @@ class AccountEditView(View):
         return redirect('accounts-list')
 
 
-def bank_account_delete(request, account_id, bank_id):
+def bank_account_delete(request, account_id, bank_id, *args, **kwargs):
     """
     Function for deleting an account from the database - view available from the bank view level.
     :param request: used by Django to pass state through the system
@@ -531,11 +531,11 @@ class BankAddView(View):
     Additional validation for existence of a new bank in the database takes place.
     """
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         form = BankAddForm()
         return render(request, 'bank_add.html', {'form': form})
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         form = BankAddForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
@@ -549,7 +549,7 @@ class BankAddView(View):
 class BankListView(View):
     """View for enlisting all banks available in the database."""
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         banks = Bank.objects.all().order_by('name')
         return render(request, 'banks_list.html', {'banks': banks})
 
@@ -557,13 +557,13 @@ class BankListView(View):
 class BankViewView(View):
     """View for displaying all details of a bank, incl. it's accounts."""
 
-    def get(self, request, bank_id):
+    def get(self, request, bank_id, *args, **kwargs):
         bank = Bank.objects.get(pk=bank_id)
         accounts = bank.account_set.all()
         return render(request, 'bank_view.html', {'bank': bank, 'accounts': accounts})
 
 
-def bank_delete(request, bank_id):
+def bank_delete(request, bank_id, *args, **kwargs):
     """
     Function for deleting bank from the database. All accounts associated with this bank are also deleted from the database.
     :param request: used by Django to pass state through the system
@@ -578,7 +578,7 @@ def bank_delete(request, bank_id):
     return render(request, 'bank_delete.html', {'bank': bank})
 
 
-def bank_view_delete(request, bank_id):
+def bank_view_delete(request, bank_id, *args, **kwargs):
     """
     View for deleting bank from the database. All accounts associated with this bank are also deleted from the database
     - this view if available to the administrator from the bank view view.
@@ -597,11 +597,11 @@ def bank_view_delete(request, bank_id):
 class BankEditView(View):
     """View for editing bank's details. Validation of the existence of the bank in the database takes place. """
 
-    def get(self, request, bank_id):
+    def get(self, request, bank_id, *args, **kwargs):
         bank = Bank.objects.get(pk=bank_id)
         return render(request, 'bank_edit.html', {'bank': bank})
 
-    def post(self, request, bank_id):
+    def post(self, request, bank_id, *args, **kwargs):
         bank = Bank.objects.get(pk=bank_id)
         name = request.POST.get('name')
         if Bank.objects.filter(name=name) and name != bank.name:
@@ -615,7 +615,7 @@ class BankEditView(View):
 class AccessTypesListView(View):
     """View for enlisting all access rights. No additional options are available in this view."""
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         access_types = []
         for access in ACCESS_CHOICE:
             access_types.append(access[1])
@@ -629,12 +629,12 @@ class AdministratorListView(View):
     the administrator objects.
     """
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         admins = Administrator.objects.all().order_by('name')
         return render(request, 'admin_list.html', {'admins': admins})
 
 
-def has_specials(input_string):
+def has_specials(input_string, *args, **kwargs):
     """
     Function for validating if a special character is in the password of a newly-created administrator
     :param input_string:
@@ -646,11 +646,11 @@ def has_specials(input_string):
 class AdministratorCreateView(View):
     """View for creating a new administrator where additional validations for login and password take place."""
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         form = AdministratorCreateForm()
         return render(request, 'admin_create.html', {'form': form})
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         form = AdministratorCreateForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
@@ -690,11 +690,11 @@ class AdministratorCreateView(View):
 class AdministratorPasswordReset(View):
     """View for resetting password where validation and hashing takes place."""
 
-    def get(self, request, admin_id):
+    def get(self, request, admin_id, *args, **kwargs):
         administrator = Administrator.objects.get(pk=admin_id)
         return render(request, 'admin_password_reset.html', {'administrator': administrator})
 
-    def post(self, request, admin_id):
+    def post(self, request, admin_id, *args, **kwargs):
         administrator = Administrator.objects.get(pk=admin_id)
         password = request.POST.get('password')
         if len(password) < 6 or len(password) > 20:
@@ -731,7 +731,7 @@ class AdministratorPasswordReset(View):
         return redirect('admins-list')
 
 
-def administrator_delete(request, admin_id):
+def administrator_delete(request, admin_id, *args, **kwargs):
     """
     Function for deleting an administrator from the database.
     :param request: used by Django to pass state through the system
@@ -749,11 +749,11 @@ def administrator_delete(request, admin_id):
 class AdministratorEditView(View):
     """View for editing administrator's details. Only surname can be modified."""
 
-    def get(self, request, admin_id):
+    def get(self, request, admin_id, *args, **kwargs):
         administrator = Administrator.objects.get(pk=admin_id)
         return render(request, 'admin_edit.html', {'administrator': administrator})
 
-    def post(self, request, admin_id):
+    def post(self, request, admin_id, *args, **kwargs):
         administrator = Administrator.objects.get(pk=admin_id)
         surname = request.POST.get('surname')
         administrator.surname = surname
@@ -764,11 +764,11 @@ class AdministratorEditView(View):
 class LoginView(View):
     """View for administrators to provide their login credentials and log into the platform."""
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         form = LoginForm()
         return render(request, 'login.html', {'form': form})
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         form = LoginForm(request.POST)
         if form.is_valid():
             login = form.cleaned_data['login']
@@ -784,7 +784,7 @@ class LoginView(View):
                 return render(request, 'dashboard.html', {'logged_admin': logged_admin})
 
 
-def log_out(request):
+def log_out(request, *args, **kwargs):
     """
     Function for logging an administrator out from the platform.
     :param request: used by Django to pass state through the system
