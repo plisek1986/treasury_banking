@@ -47,9 +47,9 @@ COUNTRY_CHOICE = [
 class User(models.Model):
     """ Class defines attributes for each user object"""
 
-    name = models.CharField(max_length=255, blank=True, null=True)
-    surname = models.CharField(max_length=255, blank=False)
-    internal_id = models.CharField(max_length=7, blank=False)
+    name = models.CharField(max_length=255, blank=False, null=False)
+    surname = models.CharField(max_length=255, blank=False, null=False)
+    internal_id = models.CharField(max_length=7, blank=False, null=False)
     account = models.ManyToManyField('Account')
     is_administrator = models.BooleanField(default=False)
     is_payment_creator = models.BooleanField(default=False)
@@ -77,7 +77,7 @@ class Administrator(models.Model):
 
     name = models.CharField(max_length=255, blank=False)
     surname = models.CharField(max_length=255, blank=False)
-    login = models.CharField(max_length=7, blank=False, unique=True)
+    login = models.CharField(max_length=7, blank=False)
     password = models.CharField(max_length=64, blank=False, null=False)
     password_repeat = models.CharField(max_length=64, blank=False, null=False)
 

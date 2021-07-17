@@ -6,7 +6,11 @@
     <label for="name">Name:</label>
     <input type="text" id="name" name="name" value="{{company.name}}">
     <label for="country">Country:</label>
-    <input type="text" id="country" name="country" value="{{company.country}}">
+    <select name="country" id="country">
+    {% for country in countries %}
+    <option value="{{country}}">{{country}}</option>
+    {% endfor %}
+    </select><br>
     <button type="submit">Save</button>
 </form>
 {{message}}
