@@ -1,11 +1,10 @@
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
 import hashlib
-from treasury_banking_app.forms import UserCreateForm, BankAddForm, AdministratorCreateForm, LoginForm
+from treasury_banking_app.forms import UserCreateForm, BankAddForm, AdministratorCreateForm
 from treasury_banking_app.models import User, Account, Company, Bank, ACCESS_CHOICE, Administrator, COUNTRY_CHOICE
-from django.shortcuts import Http404, HttpResponse
+from django.shortcuts import HttpResponse
+
 
 # dictionary utilized in the iban creation view
 IBAN_COUNTRY_CODE_LENGTH = {
@@ -442,14 +441,23 @@ class CompanyEditView(View):
         else:
             pass
         company = Company.objects.get(pk=company_id)
-        return render(request, 'company_edit.html', {'company': company})
+        countries = []
+        for country in COUNTRY_CHOICE:
+            countries.append(country[0])
+            countries.sort()
+        return render(request, 'company_edit.html', {'company': company, 'countries': countries})
 
     def post(self, request, company_id, *args, **kwargs):
         company = Company.objects.get(pk=company_id)
         name = request.POST.get('name')
         if Company.objects.filter(name=name) and name != company.name:
             message = 'Company with this name already exists in database.'
-            return render(request, 'company_edit.html', {'company': company, 'message': message})
+            countries = []
+            for country in COUNTRY_CHOICE:
+                countries.append(country[0])
+                countries.sort()
+            return render(request, 'company_edit.html', {'company': company, 'message': message,
+                                                         'countries': countries})
         country = request.POST.get('country')
         company.name = name
         company.country = country
