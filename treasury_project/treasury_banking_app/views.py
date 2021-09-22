@@ -41,7 +41,7 @@ IBAN_COUNTRY_CODE_LENGTH = {
 }
 
 # variable utilized in the password creation / validation view
-special_characters = '!@#$%^&*()_+-={}[]|:";<>?,./"' + "'"
+special_characters = '!@#$%^&*()_+-={}[]|:";<>?,./"'
 
 
 class MainPageView(View):
